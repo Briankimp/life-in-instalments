@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Instagram, Youtube, Twitter } from "lucide-react"
+import { ArrowRight, Instagram, Youtube, Twitter, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -35,6 +35,53 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState("hero")
   const [emailValid, setEmailValid] = useState<boolean | null>(null)
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [blogPosts, setBlogPosts] = useState<
+    {
+      id: string
+      title: string
+      content: string
+      excerpt: string
+      date: string
+      imageUrl?: string
+    }[]
+  >([
+    {
+      id: "1",
+      title: "Book Tour Announcement",
+      excerpt: "Join Danielle as she embarks on a nationwide tour to connect with readers and share her journey.",
+      content: "",
+      date: "2025-03-10T12:00:00.000Z",
+      imageUrl:
+        "https://images.unsplash.com/photo-1518702049750-ff1f3944143f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    },
+    {
+      id: "2",
+      title: "Behind the Cover Design",
+      excerpt: "Discover the symbolism and creative process behind the striking cover of Life in Instalments.",
+      content: "",
+      date: "2025-02-25T12:00:00.000Z",
+      imageUrl:
+        "https://images.unsplash.com/photo-1544716278-ca5e3f499656?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    },
+    {
+      id: "3",
+      title: "Reader Stories",
+      excerpt: "Heartfelt responses from readers who found their own stories reflected in the pages of the book.",
+      content: "",
+      date: "2025-01-15T12:00:00.000Z",
+      imageUrl:
+        "https://images.unsplash.com/photo-1485217988980-11786ced94c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80",
+    },
+  ])
+
+  // Add this useEffect to load blog posts
+  useEffect(() => {
+    // Load blog posts from localStorage if available
+    const storedBlogPosts = localStorage.getItem("bookBlogPosts")
+    if (storedBlogPosts) {
+      setBlogPosts(JSON.parse(storedBlogPosts))
+    }
+  }, [])
 
   // Theme images data
   const themeImages = [
@@ -364,6 +411,7 @@ export default function Home() {
     return () => ctx.revert() // Cleanup animations on unmount
   }, [])
 
+  // Add this at the end of the footer section, just before the closing </footer> tag
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Navigation */}
@@ -420,7 +468,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-10 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-8 md:gap-16 z-10">
           <div className="md:w-1/2 flex justify-center">
-            <BookCover imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/life%20intsllamnst.jpg-PaWhNjesxiciN2QwwTdsEDblxf701m.jpeg" />
+            <BookCover imageUrl="/bookcover.jpg" />
           </div>
           <div className="md:w-1/2 space-y-6 text-center md:text-left">
             <h1 className="hero-title text-4xl md:text-6xl font-serif font-bold">
@@ -545,9 +593,9 @@ export default function Home() {
               </div>
             </div>
             <div className="author-image order-1 md:order-2 flex justify-center">
-              <div className="relative w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-gold transform transition-transform hover:scale-105">
+              <div className="relative w-[350px] h-[350px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-gold transform transition-transform hover:scale-105">
                 <Image
-                  src="/placeholder.svg?height=350&width=350"
+                  src="/Author.jpg"
                   alt="Danielle Sartorelli"
                   fill
                   className="object-cover"
@@ -569,7 +617,7 @@ export default function Home() {
           <div className="max-w-3xl mx-auto">
             <div className="purchase-grid grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group">
-                <Image src="/placeholder.svg?height=80&width=80" alt="Amazon" width={80} height={80} className="mb-4" />
+                <Image src="/bookcover.jpg" alt="Amazon" width={80} height={80} className="mb-4" />
                 <h3 className="text-xl font-serif mb-2">Amazon</h3>
                 <p className="text-gray-400 mb-4">Available in hardcover, paperback, and Kindle editions</p>
                 <Button className="bg-gold hover:bg-gold/80 text-black rounded-none w-full group-hover:scale-110 transition-transform">
@@ -578,7 +626,7 @@ export default function Home() {
               </div>
               <div className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group">
                 <Image
-                  src="/placeholder.svg?height=80&width=80"
+                  src="/bookcover.jpg"
                   alt="Barnes & Noble"
                   width={80}
                   height={80}
@@ -592,7 +640,7 @@ export default function Home() {
               </div>
               <div className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group">
                 <Image
-                  src="/placeholder.svg?height=80&width=80"
+                  src="/bookcover.jpg"
                   alt="Indie Bookstores"
                   width={80}
                   height={80}
@@ -632,44 +680,45 @@ export default function Home() {
           </h2>
           <AnimatedDivider />
           <div className="blog-grid grid md:grid-cols-3 gap-8">
-            <div className="blog-card bg-black p-6 rounded-md border border-gray-800 hover:border-gold/50 transition-colors transform hover:scale-105 transition-transform">
-              <p className="text-gold text-sm mb-2">March 10, 2025</p>
-              <h3 className="text-xl font-serif mb-3">Book Tour Announcement</h3>
-              <p className="text-gray-300 mb-4">
-                Join Danielle as she embarks on a nationwide tour to connect with readers and share her journey.
-              </p>
-              <Link href="#" className="text-gold hover:underline inline-flex items-center">
-                Read More <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-            <div className="blog-card bg-black p-6 rounded-md border border-gray-800 hover:border-gold/50 transition-colors transform hover:scale-105 transition-transform">
-              <p className="text-gold text-sm mb-2">February 25, 2025</p>
-              <h3 className="text-xl font-serif mb-3">Behind the Cover Design</h3>
-              <p className="text-gray-300 mb-4">
-                Discover the symbolism and creative process behind the striking cover of Life in Instalments.
-              </p>
-              <Link href="#" className="text-gold hover:underline inline-flex items-center">
-                Read More <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-            <div className="blog-card bg-black p-6 rounded-md border border-gray-800 hover:border-gold/50 transition-colors transform hover:scale-105 transition-transform">
-              <p className="text-gold text-sm mb-2">January 15, 2025</p>
-              <h3 className="text-xl font-serif mb-3">Reader Stories</h3>
-              <p className="text-gray-300 mb-4">
-                Heartfelt responses from readers who found their own stories reflected in the pages of the book.
-              </p>
-              <Link href="#" className="text-gold hover:underline inline-flex items-center">
-                Read More <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
+            {blogPosts.slice(0, 3).map((post) => (
+              <div
+                key={post.id}
+                className="blog-card bg-black rounded-md border border-gray-800 hover:border-gold/50 transition-colors transform hover:scale-105 transition-transform overflow-hidden"
+              >
+                {post.imageUrl && (
+                  <div className="relative h-[160px] w-full">
+                    <Image src={post.imageUrl || "/placeholder.svg"} alt={post.title} fill className="object-cover" />
+                    {post.imageUrl.includes("unsplash.com") && (
+                      <div className="absolute bottom-0 right-0 bg-black/70 text-white text-xs px-2 py-1">Unsplash</div>
+                    )}
+                  </div>
+                )}
+                <div className="p-6">
+                  <p className="text-gold text-sm mb-2">
+                    {new Date(post.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                  <h3 className="text-xl font-serif mb-3">{post.title}</h3>
+                  <p className="text-gray-300 mb-4">{post.excerpt}</p>
+                  <Link href={`/blog/${post.id}`} className="text-gold hover:underline inline-flex items-center">
+                    Read More <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
           <div className="mt-12 text-center">
-            <Button
-              variant="outline"
-              className="blog-button border-gold text-gold hover:bg-gold hover:text-black rounded-none px-8 transform hover:scale-105 transition-transform"
-            >
-              View All Posts
-            </Button>
+            <Link href="/blog">
+              <Button
+                variant="outline"
+                className="blog-button border-gold text-gold hover:bg-gold hover:text-black rounded-none px-8 transform hover:scale-105 transition-transform"
+              >
+                View All Posts
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -778,7 +827,7 @@ export default function Home() {
                     className="bg-gold hover:bg-gold/80 text-black rounded-none w-full transform hover:scale-105 transition-transform"
                     disabled={formSubmitted}
                   >
-                    {formSubmitted ? "Subscribed!" : "Subscribe"}
+                    Subscribe
                   </Button>
                   {formSubmitted && (
                     <div className="text-green-500 text-center animate-fadeIn">
@@ -866,16 +915,21 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-              <p className="text-xs text-gray-500">
-                Website by{" "}
-                <Link
-                  href="https://yourdevsite.com"
-                  target="_blank"
-                  className="text-gold/70 hover:text-gold transition-colors hover:underline"
-                >
-                  Your Developer Name
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-gray-500">
+                  Website by{" "}
+                  <Link
+                    href="https://brianmunene.vercel.app"
+                    target="_blank"
+                    className="text-gold/70 hover:text-gold transition-colors hover:underline"
+                  >
+                    Kim
+                  </Link>
+                </p>
+                <Link href="/admin" className="text-gray-500 hover:text-gold transition-colors">
+                  <Lock className="h-3 w-3" />
                 </Link>
-              </p>
+              </div>
             </div>
           </div>
         </div>
