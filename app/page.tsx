@@ -510,17 +510,20 @@ export default function Home() {
             <div className="about-text space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
                 <span className="text-gold text-2xl font-serif">"</span>
-                <span className="italic">Life in Instalments</span> is a raw, unflinching memoir that chronicles a
-                journey through darkness toward light. Danielle Sartorelli weaves a powerful narrative of struggle,
-                resilience, and ultimately, transformation.
+                <span className="italic">Life in Instalments</span> is a raw and emotional memoir that chronicles the
+                heartbreaking journey of being a sister to a brother lost to addiction and crime, revealing how even the
+                most ordinary moments can give way to unimaginable chaos.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                This true story explores how we can be bound by invisible threads of fear, trauma, and expectation, yet
-                find the courage to unravel them and discover our authentic selves.
+                T Through years of struggle, Danielle grapples with the painful reality of her brother James's descent
+                into drug addiction, criminal activity, and the relentless toll it takes on their family. From childhood
+                adventures filled with innocence to the crushing weight of legal troubles, her story vividly portrays
+                the turbulence and heartbreak that addiction inflicts on everyone it touches.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                Through poetic prose and unflinching honesty, Sartorelli invites readers to witness her path from
-                confinement to liberation, offering hope that even our deepest wounds can become sources of strength.
+              With unflinching honesty, this memoir explores the complex dynamics of family, love, guilt, and the
+                devastating consequences of addiction. It is a story of hope, heartbreak, and the gut-wrenching reality
+                of trying—and failing—to save someone you love from themselves.
               </p>
             </div>
             <div className="theme-grid grid grid-cols-2 gap-4">
@@ -550,17 +553,16 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="author-text order-2 md:order-1 space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
-                Danielle Sartorelli is a writer, speaker, and advocate whose work explores the complexities of human
-                resilience and personal transformation.
+              Danielle Sartorelli is a writer whose work explores the complexities of family relationships, addiction,
+              and the human capacity for resilience in the face of overwhelming challenges.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                Drawing from her own experiences, Danielle crafts narratives that are both deeply personal and
-                universally resonant, inviting readers to find reflections of their own journeys within her words.
+              Drawing from her own experiences, Danielle crafts narratives that are both deeply personal and
+              universally resonant, inviting readers to find reflections of their own journeys within her words.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                When not writing, Danielle can be found speaking at events, connecting with readers, and advocating for
-                those whose voices often go unheard. <span className="text-gold">Life in Instalments</span> is her debut
-                memoir.
+              When not writing, Danielle enjoys connecting with readers who have experienced similar family struggles.{" "}
+              <span className="text-gold">Life in Instalments</span> is her debut memoir.
               </p>
               <div className="social-links flex gap-4 pt-4">
                 <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
