@@ -451,9 +451,9 @@ export default function Home() {
           </div>
           <div className="md:hidden">
             {/* Mobile menu button would go here */}
-            <Button variant="ghost" size="sm" className="text-gold">
+            {/* <Button variant="ghost" size="sm" className="text-gold">
               Menu
-            </Button>
+            </Button> */}
           </div>
         </div>
       </nav>
@@ -515,7 +515,7 @@ export default function Home() {
                 most ordinary moments can give way to unimaginable chaos.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                T Through years of struggle, Danielle grapples with the painful reality of her brother James's descent
+                Through years of struggle, Danielle grapples with the painful reality of her brother James's descent
                 into drug addiction, criminal activity, and the relentless toll it takes on their family. From childhood
                 adventures filled with innocence to the crushing weight of legal troubles, her story vividly portrays
                 the turbulence and heartbreak that addiction inflicts on everyone it touches.
@@ -737,9 +737,8 @@ export default function Home() {
             <div className="contact-form space-y-6">
               <h3 className="text-2xl font-serif mb-4">Get in Touch</h3>
               <p className="text-gray-300 mb-6">
-                Have questions about the book, interested in booking Danielle for an event, or just want to share your
-                thoughts? Fill out the form and we'll get back to you soon just want to share your thoughts? Fill out
-                the form and we'll get back to you soon.
+                Have questions about the book or just want to share your
+                thoughts? Fill out the form and we'll get back to you soon ? 
               </p>
               <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4">
