@@ -5,82 +5,89 @@ import { gsap } from "gsap"
 import { ArrowLeft, ArrowRight, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const reviews = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    rating: 5,
-    text: '"Life in Instalments touched me deeply. Sartorelli\'s raw honesty and beautiful prose create a narrative that is both heartbreaking and ultimately uplifting. A must-read for anyone on their own journey of healing."',
-    location: "New York Times",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    rating: 5,
-    text: "\"Few memoirs have the power to transform the reader as they follow the author's transformation. This book does exactly that. I couldn't put it down and found myself reflecting on my own life with new perspective.\"",
-    location: "Literary Review",
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    rating: 5,
-    text: '"Danielle Sartorelli writes with such clarity and emotion that you feel as though you\'re walking alongside her through every triumph and setback. A powerful testament to the resilience of the human spirit."',
-    location: "Book Club Pick",
-  },
-  {
-    id: 4,
-    name: "James Wilson",
-    rating: 5,
-    text: '"Breathtaking in its honesty and captivating in its storytelling. Life in Instalments reminds us that our darkest moments can lead to our greatest growth. I\'ve already recommended it to everyone I know."',
-    location: "Goodreads Review",
-  },
-]
+interface Review {
+  id: string
+  name: string
+  text: string
+  rating: number
+  location: string
+  date?: string
+}
 
 export default function ReviewCarousel() {
+  const [reviews, setReviews] = useState<Review[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
   const reviewsRef = useRef<HTMLDivElement[]>([])
 
+  // Load reviews from localStorage if available
+  useEffect(() => {
+    const storedReviews = localStorage.getItem("bookReviews")
+    if (storedReviews) {
+      try {
+        const parsedReviews = JSON.parse(storedReviews)
+        setReviews(parsedReviews)
+        // Reset reviewsRef array to match the new reviews length
+        reviewsRef.current = reviewsRef.current.slice(0, parsedReviews.length)
+      } catch (error) {
+        console.error("Error parsing reviews:", error)
+      }
+    }
+  }, [])
+
   const nextReview = () => {
+    if (reviews.length === 0) return
     setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length)
   }
 
   const prevReview = () => {
+    if (reviews.length === 0) return
     setCurrentIndex((prevIndex) => (prevIndex - 1 + reviews.length) % reviews.length)
   }
 
   useEffect(() => {
-    if (!carouselRef.current) return
+    if (!carouselRef.current || reviews.length === 0) return
 
     const ctx = gsap.context(() => {
-      // Animate out current review
+      // Animate out all reviews
       gsap.to(reviewsRef.current, {
         opacity: 0,
         y: 20,
         duration: 0.3,
-        stagger: 0.1,
       })
 
-      // Animate in new review
-      gsap.to(reviewsRef.current[currentIndex], {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        delay: 0.3,
-      })
+      // Animate in current review
+      if (reviewsRef.current[currentIndex]) {
+        gsap.to(reviewsRef.current[currentIndex], {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          delay: 0.3,
+        })
+      }
     }, carouselRef)
 
     return () => ctx.revert()
-  }, [currentIndex])
+  }, [currentIndex, reviews.length])
 
   // Auto-advance carousel
   useEffect(() => {
+    if (reviews.length <= 1) return // Don't auto-advance if there's only one review
+
     const interval = setInterval(() => {
       nextReview()
     }, 8000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [reviews.length])
+
+  if (reviews.length === 0) {
+    return (
+      <div className="min-h-[200px] flex items-center justify-center">
+        <p className="text-gray-400">No reviews available</p>
+      </div>
+    )
+  }
 
   return (
     <div ref={carouselRef} className="relative">
