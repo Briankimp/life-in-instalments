@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Instagram, Youtube, Twitter, Lock } from "lucide-react"
+import { ArrowRight, Instagram, Youtube, Facebook, Lock, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -18,6 +18,7 @@ import ReviewCarousel from "@/components/review-carousel"
 import FloatingElement from "@/components/floating-element"
 import AnimatedDivider from "@/components/animated-divider"
 import ThemeImage from "@/components/theme-image"
+import EventsBoard from "@/components/events-board"
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -31,10 +32,18 @@ export default function Home() {
   const purchaseRef = useRef<HTMLDivElement>(null)
   const reviewsRef = useRef<HTMLDivElement>(null)
   const blogRef = useRef<HTMLDivElement>(null)
+  const eventsRef = useRef<HTMLDivElement>(null)
   const contactRef = useRef<HTMLDivElement>(null)
   const [activeSection, setActiveSection] = useState("hero")
   const [emailValid, setEmailValid] = useState<boolean | null>(null)
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [contactFormData, setContactFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    message: "",
+  })
   const [blogPosts, setBlogPosts] = useState<
     {
       id: string
@@ -44,68 +53,116 @@ export default function Home() {
       date: string
       imageUrl?: string
     }[]
-  >([
+  >([])
+  const [purchaseLinks, setPurchaseLinks] = useState([
     {
       id: "1",
-      title: "Book Tour Announcement",
-      excerpt: "Join Danielle as she embarks on a nationwide tour to connect with readers and share her journey.",
-      content: "",
-      date: "2025-03-10T12:00:00.000Z",
-      imageUrl:
-        "https://images.unsplash.com/photo-1518702049750-ff1f3944143f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      name: "Amazon",
+      description: "Available in hardcover, paperback, and Kindle editions",
+      imageUrl: "/placeholder.svg?height=80&width=80",
+      link: "#",
     },
     {
       id: "2",
-      title: "Behind the Cover Design",
-      excerpt: "Discover the symbolism and creative process behind the striking cover of Life in Instalments.",
-      content: "",
-      date: "2025-02-25T12:00:00.000Z",
-      imageUrl:
-        "https://images.unsplash.com/photo-1544716278-ca5e3f499656?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      name: "Barnes & Noble",
+      description: "Available in hardcover, paperback, and Nook editions",
+      imageUrl: "/placeholder.svg?height=80&width=80",
+      link: "#",
     },
     {
       id: "3",
-      title: "Reader Stories",
-      excerpt: "Heartfelt responses from readers who found their own stories reflected in the pages of the book.",
-      content: "",
-      date: "2025-01-15T12:00:00.000Z",
-      imageUrl:
-        "https://images.unsplash.com/photo-1485217988980-11786ced94c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80",
+      name: "Indie Bookstores",
+      description: "Support your local bookstore and get a signed copy",
+      imageUrl: "/placeholder.svg?height=80&width=80",
+      link: "#",
+    },
+  ])
+  const [events, setEvents] = useState<
+    {
+      id: string
+      title: string
+      date: string
+      location: string
+      description: string
+    }[]
+  >([])
+
+  // Theme images data with Unsplash images
+  const [themeImages, setThemeImages] = useState([
+    {
+      src: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000",
+      alt: "Courage theme image - silhouette of person on mountain",
+      theme: "Courage",
+      credit: "Unsplash",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1519834089823-af2d966a42c4?q=80&w=1000",
+      alt: "Resilience theme image - tree growing through rock",
+      theme: "Resilience",
+      credit: "Unsplash",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?q=80&w=1000",
+      alt: "Freedom theme image - butterfly",
+      theme: "Freedom",
+      credit: "Unsplash",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1000",
+      alt: "Truth theme image - light through window",
+      theme: "Truth",
+      credit: "Unsplash",
     },
   ])
 
-  // Add this useEffect to load blog posts
+  // Add this useEffect to load blog posts, purchase links, and events
   useEffect(() => {
     // Load blog posts from localStorage if available
     const storedBlogPosts = localStorage.getItem("bookBlogPosts")
     if (storedBlogPosts) {
       setBlogPosts(JSON.parse(storedBlogPosts))
     }
-  }, [])
 
-  // Theme images data
-  const themeImages = [
-    {
-      src: "/placeholder.svg?height=400&width=400&text=Courage",
-      alt: "Courage theme image",
-      theme: "Courage",
-    },
-    {
-      src: "/placeholder.svg?height=400&width=400&text=Resilience",
-      alt: "Resilience theme image",
-      theme: "Resilience",
-    },
-    {
-      src: "/placeholder.svg?height=400&width=400&text=Transformation",
-      alt: "Transformation theme image",
-      theme: "Transformation",
-    },
-    {
-      src: "/placeholder.svg?height=400&width=400&text=Truth",
-      alt: "Truth theme image",
-      theme: "Truth",
-    },
-  ]
+    // Load purchase links from localStorage if available
+    const storedPurchaseLinks = localStorage.getItem("bookPurchaseLinks")
+    if (storedPurchaseLinks) {
+      setPurchaseLinks(JSON.parse(storedPurchaseLinks))
+    }
+
+    // Load events from localStorage if available
+    const storedEvents = localStorage.getItem("bookEvents")
+    if (storedEvents) {
+      setEvents(JSON.parse(storedEvents))
+    } else {
+      // Initialize with default events if none exist
+      const defaultEvents = [
+        {
+          id: "1",
+          title: "Book Launch Event",
+          date: "2025-05-15T18:00:00.000Z",
+          location: "Sydney Writers' Festival",
+          description:
+            "Join us for the official launch of 'Life in Instalments' with a reading and Q&A session with the author.",
+        },
+        {
+          id: "2",
+          title: "Author Talk",
+          date: "2025-06-10T19:00:00.000Z",
+          location: "Melbourne City Library",
+          description:
+            "Danielle discusses the themes of addiction, family relationships, and resilience in her memoir.",
+        },
+      ]
+      setEvents(defaultEvents)
+      localStorage.setItem("bookEvents", JSON.stringify(defaultEvents))
+    }
+
+    // Load theme images from localStorage if available
+    const storedThemeImages = localStorage.getItem("bookThemeImages")
+    if (storedThemeImages) {
+      setThemeImages(JSON.parse(storedThemeImages))
+    }
+  }, [])
 
   // Email validation
   const validateEmail = (email: string) => {
@@ -115,24 +172,70 @@ export default function Home() {
   }
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
+    const { value } = e.target
+    if (value === "") {
       setEmailValid(null)
       return
     }
-    setEmailValid(validateEmail(e.target.value))
+    setEmailValid(validateEmail(value))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setFormSubmitted(true)
+  const handleContactInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setContactFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
 
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setFormSubmitted(false)
-      const form = e.target as HTMLFormElement
-      form.reset()
-      setEmailValid(null)
-    }, 3000)
+    if (name === "email") {
+      if (value === "") {
+        setEmailValid(null)
+      } else {
+        setEmailValid(validateEmail(value))
+      }
+    }
+  }
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: `${contactFormData.firstName} ${contactFormData.lastName}`,
+          email: contactFormData.email,
+          message: contactFormData.message,
+          type: "contact",
+        }),
+      })
+
+      if (response.ok) {
+        setFormSubmitted(true)
+        setContactFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          message: "",
+        })
+      } else {
+        console.error("Failed to send email")
+      }
+    } catch (error) {
+      console.error("Error sending email:", error)
+    } finally {
+      setIsSubmitting(false)
+
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setFormSubmitted(false)
+        setEmailValid(null)
+      }, 3000)
+    }
   }
 
   // Smooth scroll function
@@ -311,6 +414,30 @@ export default function Home() {
         ease: "power3.out",
       })
 
+      // Events section animations
+      gsap.from(".events-title", {
+        scrollTrigger: {
+          trigger: ".events-title",
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 50,
+        duration: 0.8,
+        ease: "power3.out",
+      })
+
+      gsap.from(".event-card", {
+        scrollTrigger: {
+          trigger: ".events-grid",
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 50,
+        stagger: 0.2,
+        duration: 0.8,
+        ease: "power3.out",
+      })
+
       // Blog section animations
       gsap.from(".blog-title", {
         scrollTrigger: {
@@ -369,18 +496,6 @@ export default function Home() {
         ease: "power3.out",
       })
 
-      gsap.from(".subscribe-form", {
-        scrollTrigger: {
-          trigger: ".subscribe-form",
-          start: "top 80%",
-        },
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        ease: "power3.out",
-      })
-
-      // Parallax effects
       gsap.utils.toArray(".parallax-bg").forEach((bg: any) => {
         gsap.to(bg, {
           scrollTrigger: {
@@ -395,7 +510,7 @@ export default function Home() {
       })
 
       // Update active section based on scroll position
-      const sections = ["hero", "about", "author", "purchase", "reviews", "blog", "contact"]
+      const sections = ["hero", "about", "author", "purchase", "reviews", "events", "blog", "contact"]
 
       sections.forEach((section) => {
         ScrollTrigger.create({
@@ -411,7 +526,6 @@ export default function Home() {
     return () => ctx.revert() // Cleanup animations on unmount
   }, [])
 
-  // Add this at the end of the footer section, just before the closing </footer> tag
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Navigation */}
@@ -433,6 +547,7 @@ export default function Home() {
               { id: "author", label: "Author" },
               { id: "purchase", label: "Purchase" },
               { id: "reviews", label: "Reviews" },
+              { id: "events", label: "Events" },
               { id: "blog", label: "Blog" },
               { id: "contact", label: "Contact" },
             ].map((item) => (
@@ -451,9 +566,9 @@ export default function Home() {
           </div>
           <div className="md:hidden">
             {/* Mobile menu button would go here */}
-            {/* <Button variant="ghost" size="sm" className="text-gold">
+            <Button variant="ghost" size="sm" className="text-gold">
               Menu
-            </Button> */}
+            </Button>
           </div>
         </div>
       </nav>
@@ -468,7 +583,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-10 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-8 md:gap-16 z-10">
           <div className="md:w-1/2 flex justify-center">
-            <BookCover imageUrl="/bookcover.jpg" />
+            <BookCover imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/life%20intsllamnst.jpg-PaWhNjesxiciN2QwwTdsEDblxf701m.jpeg" />
           </div>
           <div className="md:w-1/2 space-y-6 text-center md:text-left">
             <h1 className="hero-title text-4xl md:text-6xl font-serif font-bold">
@@ -477,7 +592,7 @@ export default function Home() {
             <p className="hero-subtitle text-xl md:text-2xl italic text-gray-300">a true story</p>
             <FloatingElement>
               <p className="hero-quote text-xl md:text-2xl font-light leading-relaxed">
-                "Sometimes the threads that bind us are the same ones that set us free."
+                "We all have chapters that are difficult to face, the question is whether we let them define our story."
               </p>
             </FloatingElement>
             <div className="pt-4">
@@ -521,7 +636,7 @@ export default function Home() {
                 the turbulence and heartbreak that addiction inflicts on everyone it touches.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-              With unflinching honesty, this memoir explores the complex dynamics of family, love, guilt, and the
+                With unflinching honesty, this memoir explores the complex dynamics of family, love, guilt, and the
                 devastating consequences of addiction. It is a story of hope, heartbreak, and the gut-wrenching reality
                 of trying—and failing—to save someone you love from themselves.
               </p>
@@ -532,10 +647,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="mt-16 max-w-3xl mx-auto">
+          <div className="mt-16 max-w3xl mx-auto">
             <FloatingElement>
               <blockquote className="about-quote text-2xl md:text-3xl font-serif text-center italic text-gold">
-                "We are all bound by something. The question is whether we let it define us or refine us."
+                "In the end, we all protect what we truly love, even if that means letting it go."
               </blockquote>
             </FloatingElement>
           </div>
@@ -553,16 +668,16 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="author-text order-2 md:order-1 space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
-              Danielle Sartorelli is a writer whose work explores the complexities of family relationships, addiction,
-              and the human capacity for resilience in the face of overwhelming challenges.
+                Danielle Sartorelli is a writer whose work explores the complexities of family relationships, addiction,
+                and the human capacity for resilience in the face of overwhelming challenges.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-              Drawing from her own experiences, Danielle crafts narratives that are both deeply personal and
-              universally resonant, inviting readers to find reflections of their own journeys within her words.
+                Drawing from her own experiences, Danielle crafts narratives that are both deeply personal and
+                universally resonant, inviting readers to find reflections of their own journeys within her words.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-              When not writing, Danielle enjoys connecting with readers who have experienced similar family struggles.{" "}
-              <span className="text-gold">Life in Instalments</span> is her debut memoir.
+                When not writing, Danielle enjoys connecting with readers who have experienced similar family struggles.{" "}
+                <span className="text-gold">Life in Instalments</span> is her debut memoir.
               </p>
               <div className="social-links flex gap-4 pt-4">
                 <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
@@ -583,20 +698,20 @@ export default function Home() {
                     <Youtube className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://twitter.com" target="_blank" aria-label="Twitter">
+                <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
                   <Button
                     variant="outline"
                     size="icon"
                     className="rounded-full border-gold text-gold hover:bg-gold hover:text-black transform transition-transform hover:scale-110"
                   >
-                    <Twitter className="h-5 w-5" />
+                    <Facebook className="h-5 w-5" />
                   </Button>
                 </Link>
               </div>
             </div>
             <div className="author-image order-1 md:order-2 flex justify-center">
-              <div className="relative w-[350px] h-[350px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-gold transform transition-transform hover:scale-105">
-                <Image
+              <div className="relative w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-gold transform transition-transform hover:scale-105">
+              <Image
                   src="/Author.jpg"
                   alt="Danielle Sartorelli"
                   fill
@@ -618,42 +733,28 @@ export default function Home() {
           <AnimatedDivider />
           <div className="max-w-3xl mx-auto">
             <div className="purchase-grid grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group">
-                <Image src="/bookcover.jpg" alt="Amazon" width={80} height={80} className="mb-4" />
-                <h3 className="text-xl font-serif mb-2">Amazon</h3>
-                <p className="text-gray-400 mb-4">Available in hardcover, paperback, and Kindle editions</p>
-                <Button className="bg-gold hover:bg-gold/80 text-black rounded-none w-full group-hover:scale-110 transition-transform">
-                  Buy Now
-                </Button>
-              </div>
-              <div className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group">
-                <Image
-                  src="/bookcover.jpg"
-                  alt="Barnes & Noble"
-                  width={80}
-                  height={80}
-                  className="mb-4"
-                />
-                <h3 className="text-xl font-serif mb-2">Barnes & Noble</h3>
-                <p className="text-gray-400 mb-4">Available in hardcover, paperback, and Nook editions</p>
-                <Button className="bg-gold hover:bg-gold/80 text-black rounded-none w-full group-hover:scale-110 transition-transform">
-                  Buy Now
-                </Button>
-              </div>
-              <div className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group">
-                <Image
-                  src="/bookcover.jpg"
-                  alt="Indie Bookstores"
-                  width={80}
-                  height={80}
-                  className="mb-4"
-                />
-                <h3 className="text-xl font-serif mb-2">Indie Bookstores</h3>
-                <p className="text-gray-400 mb-4">Support your local bookstore and get a signed copy</p>
-                <Button className="bg-gold hover:bg-gold/80 text-black rounded-none w-full group-hover:scale-110 transition-transform">
-                  Find Stores
-                </Button>
-              </div>
+              {purchaseLinks.map((link) => (
+                <div
+                  key={link.id}
+                  className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group"
+                >
+                  <Image
+                    src="/bookcover.jpg"
+                    alt={link.name}
+                    width={80}
+                    height={80}
+                    className="mb-4"
+                  />
+                  <h3 className="text-xl font-serif mb-2">{link.name}</h3>
+                  <p className="text-gray-400 mb-4">{link.description}</p>
+                  <Button
+                    className="bg-gold hover:bg-gold/80 text-black rounded-none w-full group-hover:scale-110 transition-transform"
+                    onClick={() => window.open(link.link, "_blank")}
+                  >
+                    Buy Now
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -673,8 +774,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Events Section */}
+      <section id="events" ref={eventsRef} className="py-24 bg-black relative">
+        <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
+        <div className="container mx-auto px-4  opacity-5 z-0 parallax-bg"></div>
+        <div className="container mx-auto px-4 z-10 relative">
+          <h2 className="events-title text-3xl md:text-5xl font-serif mb-12 text-center">
+            Coming <span className="text-gold">Events</span>
+          </h2>
+          <AnimatedDivider />
+          <div className="max-w-4xl mx-auto">
+            <EventsBoard events={events} />
+          </div>
+        </div>
+      </section>
+
       {/* Blog Section */}
-      <section id="blog" ref={blogRef} className="py-24 bg-black relative">
+      <section id="blog" ref={blogRef} className="py-24 bg-gray-950 relative">
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="blog-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -697,7 +813,7 @@ export default function Home() {
                 )}
                 <div className="p-6">
                   <p className="text-gold text-sm mb-2">
-                    {new Date(post.date).toLocaleDateString("en-US", {
+                    {new Date(post.date).toLocaleDateString("en-AU", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -725,26 +841,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact & Subscription */}
-      <section id="contact" ref={contactRef} className="py-24 bg-gray-950 relative">
+      {/* Contact Section */}
+      <section id="contact" ref={contactRef} className="py-24 bg-black relative">
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="contact-title text-3xl md:text-5xl font-serif mb-12 text-center">
-            Connect & <span className="text-gold">Subscribe</span>
+            Get in <span className="text-gold">Touch</span>
           </h2>
           <AnimatedDivider />
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="max-w-2xl mx-auto">
             <div className="contact-form space-y-6">
-              <h3 className="text-2xl font-serif mb-4">Get in Touch</h3>
-              <p className="text-gray-300 mb-6">
-                Have questions about the book or just want to share your
-                thoughts? Fill out the form and we'll get back to you soon ? 
+              <p className="text-gray-300 mb-6 text-center">
+                Have questions about the book, interested in booking Danielle for an event, or just want to share your
+                thoughts? Fill out the form and we'll get back to you soon.
               </p>
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form className="space-y-4" onSubmit={handleContactSubmit}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Input
                       placeholder="First Name"
+                      name="firstName"
+                      value={contactFormData.firstName}
+                      onChange={handleContactInputChange}
                       className="bg-gray-900 border-gray-700 focus:border-gold rounded-none"
                       required
                     />
@@ -752,6 +870,9 @@ export default function Home() {
                   <div>
                     <Input
                       placeholder="Last Name"
+                      name="lastName"
+                      value={contactFormData.lastName}
+                      onChange={handleContactInputChange}
                       className="bg-gray-900 border-gray-700 focus:border-gold rounded-none"
                       required
                     />
@@ -760,11 +881,13 @@ export default function Home() {
                 <div className="relative">
                   <Input
                     type="email"
+                    name="email"
                     placeholder="Email Address"
+                    value={contactFormData.email}
+                    onChange={handleContactInputChange}
                     className={`bg-gray-900 border-gray-700 focus:border-gold rounded-none ${
                       emailValid === false ? "border-red-500" : emailValid === true ? "border-green-500" : ""
                     }`}
-                    onChange={handleEmailChange}
                     required
                   />
                   {emailValid === false && (
@@ -774,6 +897,9 @@ export default function Home() {
                 <div>
                   <Textarea
                     placeholder="Your Message"
+                    name="message"
+                    value={contactFormData.message}
+                    onChange={handleContactInputChange}
                     className="bg-gray-900 border-gray-700 focus:border-gold rounded-none min-h-[150px]"
                     required
                   />
@@ -781,9 +907,17 @@ export default function Home() {
                 <Button
                   type="submit"
                   className="bg-gold hover:bg-gold/80 text-black rounded-none w-full transform hover:scale-105 transition-transform"
-                  disabled={formSubmitted}
+                  disabled={isSubmitting || formSubmitted}
                 >
-                  {formSubmitted ? "Message Sent!" : "Send Message"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+                    </>
+                  ) : formSubmitted ? (
+                    "Message Sent!"
+                  ) : (
+                    "Send Message"
+                  )}
                 </Button>
                 {formSubmitted && (
                   <div className="text-green-500 text-center animate-fadeIn">
@@ -792,61 +926,12 @@ export default function Home() {
                 )}
               </form>
             </div>
-            <div className="subscribe-form space-y-6">
-              <h3 className="text-2xl font-serif mb-4">Join the Community</h3>
-              <p className="text-gray-300 mb-6">
-                Subscribe to receive exclusive content, early access to new writings, event invitations, and personal
-                insights from Danielle.
-              </p>
-              <div className="bg-gray-900 p-8 rounded-md border border-gray-800 transform hover:scale-105 transition-transform">
-                <h4 className="text-xl font-serif mb-4">Newsletter Subscription</h4>
-                <p className="text-gray-300 mb-6">
-                  Be the first to know about new releases, events, and special offers.
-                </p>
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <Input
-                    placeholder="Your Name"
-                    className="bg-black border-gray-700 focus:border-gold rounded-none"
-                    required
-                  />
-                  <div className="relative">
-                    <Input
-                      type="email"
-                      placeholder="Email Address"
-                      className={`bg-black border-gray-700 focus:border-gold rounded-none ${
-                        emailValid === false ? "border-red-500" : emailValid === true ? "border-green-500" : ""
-                      }`}
-                      onChange={handleEmailChange}
-                      required
-                    />
-                    {emailValid === false && (
-                      <p className="text-red-500 text-xs mt-1">Please enter a valid email address</p>
-                    )}
-                  </div>
-                  <Button
-                    type="submit"
-                    className="bg-gold hover:bg-gold/80 text-black rounded-none w-full transform hover:scale-105 transition-transform"
-                    disabled={formSubmitted}
-                  >
-                    Subscribe
-                  </Button>
-                  {formSubmitted && (
-                    <div className="text-green-500 text-center animate-fadeIn">
-                      Thank you for subscribing! Check your email for confirmation.
-                    </div>
-                  )}
-                </form>
-                <p className="text-xs text-gray-400 mt-4">
-                  We respect your privacy and will never share your information. You can unsubscribe at any time.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-black border-t border-gray-800">
+      <footer className="py-12 bg-gray-950 border-t border-gray-800">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
@@ -870,6 +955,7 @@ export default function Home() {
                 { id: "author", label: "Author" },
                 { id: "purchase", label: "Purchase" },
                 { id: "reviews", label: "Reviews" },
+                { id: "events", label: "Events" },
                 { id: "blog", label: "Blog" },
                 { id: "contact", label: "Contact" },
               ].map((item) => (
@@ -906,18 +992,18 @@ export default function Home() {
                     <Youtube className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://twitter.com" target="_blank" aria-label="Twitter">
+                <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
                   <Button
                     variant="outline"
                     size="icon"
                     className="rounded-full border-gray-700 text-gray-300 hover:border-gold hover:text-gold transform hover:scale-110 transition-transform"
                   >
-                    <Twitter className="h-5 w-5" />
+                    <Facebook className="h-5 w-5" />
                   </Button>
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500">
                   Website by{" "}
                   <Link
                     href="https://brianmunene.vercel.app"
