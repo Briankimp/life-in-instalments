@@ -1,59 +1,67 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useRef, useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, Instagram, Youtube, Facebook, Lock, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { ScrollToPlugin } from "gsap/ScrollToPlugin"
-import ParticleBackground from "@/components/particle-background"
-import BookCover from "@/components/book-cover"
-import ReviewCarousel from "@/components/review-carousel"
-import FloatingElement from "@/components/floating-element"
-import AnimatedDivider from "@/components/animated-divider"
-import ThemeImage from "@/components/theme-image"
-import EventsBoard from "@/components/events-board"
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Instagram,
+  Youtube,
+  Facebook,
+  Lock,
+  Loader2,
+  Mail,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import ParticleBackground from "@/components/particle-background";
+import BookCover from "@/components/book-cover";
+import ReviewCarousel from "@/components/review-carousel";
+import FloatingElement from "@/components/floating-element";
+import AnimatedDivider from "@/components/animated-divider";
+import ThemeImage from "@/components/theme-image";
+import EventsBoard from "@/components/events-board";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 }
 
 export default function Home() {
-  const heroRef = useRef<HTMLDivElement>(null)
-  const aboutRef = useRef<HTMLDivElement>(null)
-  const authorRef = useRef<HTMLDivElement>(null)
-  const purchaseRef = useRef<HTMLDivElement>(null)
-  const reviewsRef = useRef<HTMLDivElement>(null)
-  const blogRef = useRef<HTMLDivElement>(null)
-  const eventsRef = useRef<HTMLDivElement>(null)
-  const contactRef = useRef<HTMLDivElement>(null)
-  const [activeSection, setActiveSection] = useState("hero")
-  const [emailValid, setEmailValid] = useState<boolean | null>(null)
-  const [formSubmitted, setFormSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const heroRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const authorRef = useRef<HTMLDivElement>(null);
+  const purchaseRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef<HTMLDivElement>(null);
+  const blogRef = useRef<HTMLDivElement>(null);
+  const eventsRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState("hero");
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [contactFormData, setContactFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     message: "",
-  })
+  });
   const [blogPosts, setBlogPosts] = useState<
     {
-      id: string
-      title: string
-      content: string
-      excerpt: string
-      date: string
-      imageUrl?: string
+      id: string;
+      title: string;
+      content: string;
+      excerpt: string;
+      date: string;
+      imageUrl?: string;
     }[]
-  >([])
+  >([]);
   const [purchaseLinks, setPurchaseLinks] = useState([
     {
       id: "1",
@@ -76,16 +84,16 @@ export default function Home() {
       imageUrl: "/placeholder.svg?height=80&width=80",
       link: "#",
     },
-  ])
+  ]);
   const [events, setEvents] = useState<
     {
-      id: string
-      title: string
-      date: string
-      location: string
-      description: string
+      id: string;
+      title: string;
+      date: string;
+      location: string;
+      description: string;
     }[]
-  >([])
+  >([]);
 
   // Theme images data with Unsplash images
   const [themeImages, setThemeImages] = useState([
@@ -113,26 +121,26 @@ export default function Home() {
       theme: "Truth",
       credit: "Unsplash",
     },
-  ])
+  ]);
 
   // Add this useEffect to load blog posts, purchase links, and events
   useEffect(() => {
     // Load blog posts from localStorage if available
-    const storedBlogPosts = localStorage.getItem("bookBlogPosts")
+    const storedBlogPosts = localStorage.getItem("bookBlogPosts");
     if (storedBlogPosts) {
-      setBlogPosts(JSON.parse(storedBlogPosts))
+      setBlogPosts(JSON.parse(storedBlogPosts));
     }
 
     // Load purchase links from localStorage if available
-    const storedPurchaseLinks = localStorage.getItem("bookPurchaseLinks")
+    const storedPurchaseLinks = localStorage.getItem("bookPurchaseLinks");
     if (storedPurchaseLinks) {
-      setPurchaseLinks(JSON.parse(storedPurchaseLinks))
+      setPurchaseLinks(JSON.parse(storedPurchaseLinks));
     }
 
     // Load events from localStorage if available
-    const storedEvents = localStorage.getItem("bookEvents")
+    const storedEvents = localStorage.getItem("bookEvents");
     if (storedEvents) {
-      setEvents(JSON.parse(storedEvents))
+      setEvents(JSON.parse(storedEvents));
     } else {
       // Initialize with default events if none exist
       const defaultEvents = [
@@ -152,53 +160,55 @@ export default function Home() {
           description:
             "Danielle discusses the themes of addiction, family relationships, and resilience in her memoir.",
         },
-      ]
-      setEvents(defaultEvents)
-      localStorage.setItem("bookEvents", JSON.stringify(defaultEvents))
+      ];
+      setEvents(defaultEvents);
+      localStorage.setItem("bookEvents", JSON.stringify(defaultEvents));
     }
 
     // Load theme images from localStorage if available
-    const storedThemeImages = localStorage.getItem("bookThemeImages")
+    const storedThemeImages = localStorage.getItem("bookThemeImages");
     if (storedThemeImages) {
-      setThemeImages(JSON.parse(storedThemeImages))
+      setThemeImages(JSON.parse(storedThemeImages));
     }
-  }, [])
+  }, []);
 
   // Email validation
   const validateEmail = (email: string) => {
     const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return re.test(String(email).toLowerCase())
-  }
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
+    const { value } = e.target;
     if (value === "") {
-      setEmailValid(null)
-      return
+      setEmailValid(null);
+      return;
     }
-    setEmailValid(validateEmail(value))
-  }
+    setEmailValid(validateEmail(value));
+  };
 
-  const handleContactInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+  const handleContactInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
     setContactFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
 
     if (name === "email") {
       if (value === "") {
-        setEmailValid(null)
+        setEmailValid(null);
       } else {
-        setEmailValid(validateEmail(value))
+        setEmailValid(validateEmail(value));
       }
     }
-  }
+  };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/send-email", {
@@ -212,43 +222,43 @@ export default function Home() {
           message: contactFormData.message,
           type: "contact",
         }),
-      })
+      });
 
       if (response.ok) {
-        setFormSubmitted(true)
+        setFormSubmitted(true);
         setContactFormData({
           firstName: "",
           lastName: "",
           email: "",
           message: "",
-        })
+        });
       } else {
-        console.error("Failed to send email")
+        console.error("Failed to send email");
       }
     } catch (error) {
-      console.error("Error sending email:", error)
+      console.error("Error sending email:", error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
 
       // Reset form after 3 seconds
       setTimeout(() => {
-        setFormSubmitted(false)
-        setEmailValid(null)
-      }, 3000)
+        setFormSubmitted(false);
+        setEmailValid(null);
+      }, 3000);
     }
-  }
+  };
 
   // Smooth scroll function
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
+    const element = document.getElementById(id);
     if (element) {
       gsap.to(window, {
         duration: 1,
         scrollTo: { y: element, offsetY: 80 },
         ease: "power3.inOut",
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
     // Initialize animations
@@ -260,7 +270,7 @@ export default function Home() {
         duration: 1,
         delay: 0.5,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".hero-subtitle", {
         opacity: 0,
@@ -268,7 +278,7 @@ export default function Home() {
         duration: 1,
         delay: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".hero-quote", {
         opacity: 0,
@@ -276,7 +286,7 @@ export default function Home() {
         duration: 1,
         delay: 1.1,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".hero-button", {
         opacity: 0,
@@ -284,7 +294,7 @@ export default function Home() {
         duration: 1,
         delay: 1.4,
         ease: "power3.out",
-      })
+      });
 
       // About section animations
       gsap.from(".about-title", {
@@ -296,7 +306,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".about-text p", {
         scrollTrigger: {
@@ -308,7 +318,7 @@ export default function Home() {
         stagger: 0.2,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".theme-grid", {
         scrollTrigger: {
@@ -319,7 +329,7 @@ export default function Home() {
         scale: 0.9,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".about-quote", {
         scrollTrigger: {
@@ -330,7 +340,7 @@ export default function Home() {
         y: 30,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       // Author section animations
       gsap.from(".author-title", {
@@ -342,7 +352,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".author-image", {
         scrollTrigger: {
@@ -353,7 +363,7 @@ export default function Home() {
         scale: 0.8,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".author-text p", {
         scrollTrigger: {
@@ -365,7 +375,7 @@ export default function Home() {
         stagger: 0.2,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".social-links", {
         scrollTrigger: {
@@ -376,7 +386,7 @@ export default function Home() {
         y: 20,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       // Purchase section animations
       gsap.from(".purchase-title", {
@@ -388,7 +398,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".purchase-card", {
         scrollTrigger: {
@@ -400,7 +410,7 @@ export default function Home() {
         stagger: 0.2,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       // Reviews section animations
       gsap.from(".reviews-title", {
@@ -412,7 +422,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       // Events section animations
       gsap.from(".events-title", {
@@ -424,7 +434,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".event-card", {
         scrollTrigger: {
@@ -436,7 +446,7 @@ export default function Home() {
         stagger: 0.2,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       // Blog section animations
       gsap.from(".blog-title", {
@@ -448,7 +458,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".blog-card", {
         scrollTrigger: {
@@ -460,7 +470,7 @@ export default function Home() {
         stagger: 0.2,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".blog-button", {
         scrollTrigger: {
@@ -471,7 +481,7 @@ export default function Home() {
         y: 20,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       // Contact section animations
       gsap.from(".contact-title", {
@@ -483,7 +493,7 @@ export default function Home() {
         y: 50,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.from(".contact-form", {
         scrollTrigger: {
@@ -494,7 +504,7 @@ export default function Home() {
         y: 30,
         duration: 0.8,
         ease: "power3.out",
-      })
+      });
 
       gsap.utils.toArray(".parallax-bg").forEach((bg: any) => {
         gsap.to(bg, {
@@ -506,11 +516,20 @@ export default function Home() {
           },
           y: "20%",
           ease: "none",
-        })
-      })
+        });
+      });
 
       // Update active section based on scroll position
-      const sections = ["hero", "about", "author", "purchase", "reviews", "events", "blog", "contact"]
+      const sections = [
+        "hero",
+        "about",
+        "author",
+        "purchase",
+        "reviews",
+        "events",
+        "blog",
+        "contact",
+      ];
 
       sections.forEach((section) => {
         ScrollTrigger.create({
@@ -519,12 +538,12 @@ export default function Home() {
           end: "bottom center",
           onEnter: () => setActiveSection(section),
           onEnterBack: () => setActiveSection(section),
-        })
-      })
-    })
+        });
+      });
+    });
 
-    return () => ctx.revert() // Cleanup animations on unmount
-  }, [])
+    return () => ctx.revert(); // Cleanup animations on unmount
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
@@ -535,8 +554,8 @@ export default function Home() {
             href="#hero"
             className="text-gold font-serif text-xl"
             onClick={(e) => {
-              e.preventDefault()
-              scrollToSection("hero")
+              e.preventDefault();
+              scrollToSection("hero");
             }}
           >
             Life in Instalments
@@ -554,10 +573,12 @@ export default function Home() {
               <Link
                 key={item.id}
                 href={`#${item.id}`}
-                className={`hover:text-gold transition-colors ${activeSection === item.id ? "text-gold" : ""}`}
+                className={`hover:text-gold transition-colors ${
+                  activeSection === item.id ? "text-gold" : ""
+                }`}
                 onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection(item.id)
+                  e.preventDefault();
+                  scrollToSection(item.id);
                 }}
               >
                 {item.label}
@@ -587,12 +608,16 @@ export default function Home() {
           </div>
           <div className="md:w-1/2 space-y-6 text-center md:text-left">
             <h1 className="hero-title text-4xl md:text-6xl font-serif font-bold">
-              <span className="text-gold">LIFE</span> in <span className="text-white">Instalments</span>
+              <span className="text-gold">LIFE</span> in{" "}
+              <span className="text-white">Instalments</span>
             </h1>
-            <p className="hero-subtitle text-xl md:text-2xl italic text-gray-300">a true story</p>
+            <p className="hero-subtitle text-xl md:text-2xl italic text-gray-300">
+              a true story
+            </p>
             <FloatingElement>
               <p className="hero-quote text-xl md:text-2xl font-light leading-relaxed">
-                "We all have chapters that are difficult to face, the question is whether we let them define our story."
+                "We all have chapters that are difficult to face, the question
+                is whether we let them define our story."
               </p>
             </FloatingElement>
             <div className="pt-4">
@@ -625,32 +650,45 @@ export default function Home() {
             <div className="about-text space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
                 <span className="text-gold text-2xl font-serif">"</span>
-                <span className="italic">Life in Instalments</span> is a raw and emotional memoir that chronicles the
-                heartbreaking journey of being a sister to a brother lost to addiction and crime, revealing how even the
-                most ordinary moments can give way to unimaginable chaos.
+                <span className="italic">Life in Instalments</span> is a raw and
+                emotional memoir that chronicles the heartbreaking journey of
+                being a sister to a brother lost to addiction and crime,
+                revealing how even the most ordinary moments can give way to
+                unimaginable chaos.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                Through years of struggle, Danielle grapples with the painful reality of her brother James's descent
-                into drug addiction, criminal activity, and the relentless toll it takes on their family. From childhood
-                adventures filled with innocence to the crushing weight of legal troubles, her story vividly portrays
-                the turbulence and heartbreak that addiction inflicts on everyone it touches.
+                Through years of struggle, Danielle grapples with the painful
+                reality of her brother James's descent into drug addiction,
+                criminal activity, and the relentless toll it takes on their
+                family. From childhood adventures filled with innocence to the
+                crushing weight of legal troubles, her story vividly portrays
+                the turbulence and heartbreak that addiction inflicts on
+                everyone it touches.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                With unflinching honesty, this memoir explores the complex dynamics of family, love, guilt, and the
-                devastating consequences of addiction. It is a story of hope, heartbreak, and the gut-wrenching reality
-                of trying—and failing—to save someone you love from themselves.
+                With unflinching honesty, this memoir explores the complex
+                dynamics of family, love, guilt, and the devastating
+                consequences of addiction. It is a story of hope, heartbreak,
+                and the gut-wrenching reality of trying—and failing—to save
+                someone you love from themselves.
               </p>
             </div>
             <div className="theme-grid grid grid-cols-2 gap-4">
               {themeImages.map((image, index) => (
-                <ThemeImage key={index} src={image.src} alt={image.alt} theme={image.theme} />
+                <ThemeImage
+                  key={index}
+                  src={image.src}
+                  alt={image.alt}
+                  theme={image.theme}
+                />
               ))}
             </div>
           </div>
           <div className="mt-16 max-w3xl mx-auto">
             <FloatingElement>
               <blockquote className="about-quote text-2xl md:text-3xl font-serif text-center italic text-gold">
-                "In the end, we all protect what we truly love, even if that means letting it go."
+                "In the end, we all protect what we truly love, even if that
+                means letting it go."
               </blockquote>
             </FloatingElement>
           </div>
@@ -658,7 +696,11 @@ export default function Home() {
       </section>
 
       {/* About the Author */}
-      <section id="author" ref={authorRef} className="py-24 bg-gray-950 relative">
+      <section
+        id="author"
+        ref={authorRef}
+        className="py-24 bg-gray-950 relative"
+      >
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="author-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -668,19 +710,28 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="author-text order-2 md:order-1 space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
-                Danielle Sartorelli is a writer whose work explores the complexities of family relationships, addiction,
-                and the human capacity for resilience in the face of overwhelming challenges.
+                Danielle Sartorelli is a writer whose work explores the
+                complexities of family relationships, addiction, and the human
+                capacity for resilience in the face of overwhelming challenges.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                Drawing from her own experiences, Danielle crafts narratives that are both deeply personal and
-                universally resonant, inviting readers to find reflections of their own journeys within her words.
+                Drawing from her own experiences, Danielle crafts narratives
+                that are both deeply personal and universally resonant, inviting
+                readers to find reflections of their own journeys within her
+                words.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                When not writing, Danielle enjoys connecting with readers who have experienced similar family struggles.{" "}
-                <span className="text-gold">Life in Instalments</span> is her debut memoir.
+                When not writing, Danielle enjoys connecting with readers who
+                have experienced similar family struggles.{" "}
+                <span className="text-gold">Life in Instalments</span> is her
+                debut memoir.
               </p>
               <div className="social-links flex gap-4 pt-4">
-                <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
+                <Link
+                  href="https://instagram.com"
+                  target="_blank"
+                  aria-label="Instagram"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -689,7 +740,11 @@ export default function Home() {
                     <Instagram className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://youtube.com" target="_blank" aria-label="YouTube">
+                <Link
+                  href="https://youtube.com"
+                  target="_blank"
+                  aria-label="YouTube"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -698,7 +753,11 @@ export default function Home() {
                     <Youtube className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
+                <Link
+                  href="https://facebook.com"
+                  target="_blank"
+                  aria-label="Facebook"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -711,7 +770,7 @@ export default function Home() {
             </div>
             <div className="author-image order-1 md:order-2 flex justify-center">
               <div className="relative w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-gold transform transition-transform hover:scale-105">
-              <Image
+                <Image
                   src="/Author.jpg"
                   alt="Danielle Sartorelli"
                   fill
@@ -724,7 +783,11 @@ export default function Home() {
       </section>
 
       {/* Purchase Links */}
-      <section id="purchase" ref={purchaseRef} className="py-24 bg-black relative">
+      <section
+        id="purchase"
+        ref={purchaseRef}
+        className="py-24 bg-black relative"
+      >
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="purchase-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -761,7 +824,11 @@ export default function Home() {
       </section>
 
       {/* Reviews & Testimonials */}
-      <section id="reviews" ref={reviewsRef} className="py-24 bg-gray-950 relative">
+      <section
+        id="reviews"
+        ref={reviewsRef}
+        className="py-24 bg-gray-950 relative"
+      >
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="reviews-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -801,13 +868,20 @@ export default function Home() {
             {blogPosts.slice(0, 3).map((post) => (
               <div
                 key={post.id}
-                className="blog-card bg-black rounded-md border border-gray-800 hover:border-gold/50 transition-colors transform hover:scale-105 transition-transform overflow-hidden"
+                className="blog-card bg-black rounded-md border border-gray-800 hover:border-gold/50 transition-colors transform hover:scale-105  overflow-hidden"
               >
                 {post.imageUrl && (
                   <div className="relative h-[160px] w-full">
-                    <Image src={post.imageUrl || "/placeholder.svg"} alt={post.title} fill className="object-cover" />
+                    <Image
+                      src={post.imageUrl || "/placeholder.svg"}
+                      alt={post.title}
+                      fill
+                      className="object-cover"
+                    />
                     {post.imageUrl.includes("unsplash.com") && (
-                      <div className="absolute bottom-0 right-0 bg-black/70 text-white text-xs px-2 py-1">Unsplash</div>
+                      <div className="absolute bottom-0 right-0 bg-black/70 text-white text-xs px-2 py-1">
+                        Unsplash
+                      </div>
                     )}
                   </div>
                 )}
@@ -821,7 +895,10 @@ export default function Home() {
                   </p>
                   <h3 className="text-xl font-serif mb-3">{post.title}</h3>
                   <p className="text-gray-300 mb-4">{post.excerpt}</p>
-                  <Link href={`/blog/${post.id}`} className="text-gold hover:underline inline-flex items-center">
+                  <Link
+                    href={`/blog/${post.id}`}
+                    className="text-gold hover:underline inline-flex items-center"
+                  >
                     Read More <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </div>
@@ -842,7 +919,11 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" ref={contactRef} className="py-24 bg-black relative">
+      <section
+        id="contact"
+        ref={contactRef}
+        className="py-24 bg-black relative"
+      >
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="contact-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -852,8 +933,9 @@ export default function Home() {
           <div className="max-w-2xl mx-auto">
             <div className="contact-form space-y-6">
               <p className="text-gray-300 mb-6 text-center">
-                Have questions about the book, interested in booking Danielle for an event, or just want to share your
-                thoughts? Fill out the form and we'll get back to you soon.
+                Have questions about the book, interested in booking Danielle
+                for an event, or just want to share your thoughts? Fill out the
+                form and we'll get back to you soon.
               </p>
               <form className="space-y-4" onSubmit={handleContactSubmit}>
                 <div className="grid grid-cols-2 gap-4">
@@ -886,12 +968,18 @@ export default function Home() {
                     value={contactFormData.email}
                     onChange={handleContactInputChange}
                     className={`bg-gray-900 border-gray-700 focus:border-gold rounded-none ${
-                      emailValid === false ? "border-red-500" : emailValid === true ? "border-green-500" : ""
+                      emailValid === false
+                        ? "border-red-500"
+                        : emailValid === true
+                        ? "border-green-500"
+                        : ""
                     }`}
                     required
                   />
                   {emailValid === false && (
-                    <p className="text-red-500 text-xs mt-1">Please enter a valid email address</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      Please enter a valid email address
+                    </p>
                   )}
                 </div>
                 <div>
@@ -911,7 +999,8 @@ export default function Home() {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                      Sending...
                     </>
                   ) : formSubmitted ? (
                     "Message Sent!"
@@ -939,14 +1028,15 @@ export default function Home() {
                 href="#hero"
                 className="text-gold font-serif text-2xl"
                 onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection("hero")
+                  e.preventDefault();
+                  scrollToSection("hero");
                 }}
               >
                 Life in Instalments
               </Link>
               <p className="text-gray-400 mt-2">
-                © {new Date().getFullYear()} Danielle Sartorelli. All rights reserved.
+                © {new Date().getFullYear()} Danielle Sartorelli. All rights
+                reserved.
               </p>
             </div>
             <div className="flex gap-8">
@@ -964,8 +1054,8 @@ export default function Home() {
                   href={`#${item.id}`}
                   className="text-gray-300 hover:text-gold transition-colors"
                   onClick={(e) => {
-                    e.preventDefault()
-                    scrollToSection(item.id)
+                    e.preventDefault();
+                    scrollToSection(item.id);
                   }}
                 >
                   {item.label}
@@ -974,16 +1064,24 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-end gap-4 mt-6 md:mt-0">
               <div className="flex gap-4">
-                <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
+                <Link
+                  href="accidentalauthor86@gmail.com"
+                  target="_blank"
+                  aria-label="Instagram"
+                >
                   <Button
                     variant="outline"
                     size="icon"
                     className="rounded-full border-gray-700 text-gray-300 hover:border-gold hover:text-gold transform hover:scale-110 transition-transform"
                   >
-                    <Instagram className="h-5 w-5" />
+                    <Mail className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://youtube.com" target="_blank" aria-label="YouTube">
+                <Link
+                  href=" https://youtube.com/@accidentalauthor?si=JCkHhugSHi_QPmmm"
+                  target="_blank"
+                  aria-label="YouTube"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -992,7 +1090,12 @@ export default function Home() {
                     <Youtube className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
+                <Link
+                  href="https://www.facebook.com/profile.php?id=61574600643131
+"
+                  target="_blank"
+                  aria-label="Facebook"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -1003,7 +1106,7 @@ export default function Home() {
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-              <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500">
                   Website by{" "}
                   <Link
                     href="https://brianmunene.vercel.app"
@@ -1013,7 +1116,10 @@ export default function Home() {
                     Kim
                   </Link>
                 </p>
-                <Link href="/admin" className="text-gray-500 hover:text-gold transition-colors">
+                <Link
+                  href="/admin"
+                  className="text-gray-500 hover:text-gold transition-colors"
+                >
                   <Lock className="h-3 w-3" />
                 </Link>
               </div>
@@ -1022,6 +1128,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
-
