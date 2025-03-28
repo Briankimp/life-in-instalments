@@ -137,6 +137,38 @@ export default function Home() {
       setPurchaseLinks(JSON.parse(storedPurchaseLinks));
     }
 
+
+    // const handleContactSubmit = async (e: React.FormEvent) => {
+    //   e.preventDefault();
+    //   setIsSubmitting(true);
+      
+    //   try {
+    //     const response = await fetch('/api/contact', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify(contactFormData),
+    //     });
+    
+    //     if (response.ok) {
+    //       setFormSubmitted(true);
+    //       setContactFormData({
+    //         firstName: '',
+    //         lastName: '',
+    //         email: '',
+    //         message: '',
+    //       });
+    //     } else {
+    //       throw new Error('Failed to send message');
+    //     }
+    //   } catch (error) {
+    //     console.error('Error:', error);
+    //     alert('Failed to send message. Please try again later.');
+    //   } finally {
+    //     setIsSubmitting(false);
+    //   }
+    // };
     // Load events from localStorage if available
     const storedEvents = localStorage.getItem("bookEvents");
     if (storedEvents) {
@@ -209,21 +241,21 @@ export default function Home() {
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
-      const response = await fetch("/api/send-email", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: `${contactFormData.firstName} ${contactFormData.lastName}`,
+          firstName: contactFormData.firstName,
+          lastName: contactFormData.lastName,
           email: contactFormData.email,
-          message: contactFormData.message,
-          type: "contact",
+          message: contactFormData.message
         }),
       });
-
+  
       if (response.ok) {
         setFormSubmitted(true);
         setContactFormData({
@@ -233,13 +265,14 @@ export default function Home() {
           message: "",
         });
       } else {
-        console.error("Failed to send email");
+        throw new Error('Failed to send message');
       }
     } catch (error) {
       console.error("Error sending email:", error);
+      alert('Failed to send message. Please try again later.');
     } finally {
       setIsSubmitting(false);
-
+  
       // Reset form after 3 seconds
       setTimeout(() => {
         setFormSubmitted(false);
@@ -996,6 +1029,7 @@ export default function Home() {
                   type="submit"
                   className="bg-gold hover:bg-gold/80 text-black rounded-none w-full transform hover:scale-105 transition-transform"
                   disabled={isSubmitting || formSubmitted}
+                  onClick={handleContactSubmit}
                 >
                   {isSubmitting ? (
                     <>
