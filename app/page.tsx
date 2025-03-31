@@ -98,27 +98,27 @@ export default function Home() {
   // Theme images data with Unsplash images
   const [themeImages, setThemeImages] = useState([
     {
-      src: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000",
-      alt: "Courage theme image - silhouette of person on mountain",
-      theme: "Courage",
+      src: "/Consequences.jpg",
+      alt: "Consequences theme image - silhouette of person on mountain",
+      theme: "Consequences",
       credit: "Unsplash",
     },
     {
-      src: "https://images.unsplash.com/photo-1519834089823-af2d966a42c4?q=80&w=1000",
-      alt: "Resilience theme image - tree growing through rock",
-      theme: "Resilience",
+      src: "/Redemption.jpg",
+      alt: "Redemption theme image - tree growing through rock",
+      theme: "Redemption",
       credit: "Unsplash",
     },
     {
-      src: "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?q=80&w=1000",
-      alt: "Freedom theme image - butterfly",
-      theme: "Freedom",
+      src: "/Hope.jpg",
+      alt: "Hope theme image - butterfly",
+      theme: "Hope",
       credit: "Unsplash",
     },
     {
-      src: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1000",
-      alt: "Truth theme image - light through window",
-      theme: "Truth",
+      src: "/Innocence.jpg",
+      alt: "Innocence theme image - light through window",
+      theme: "Innocence",
       credit: "Unsplash",
     },
   ]);
