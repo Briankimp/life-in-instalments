@@ -116,7 +116,7 @@ export default function Home() {
       credit: "Unsplash",
     },
     {
-      src: "/Innocence.jpg",
+      src: "/innocence.jpg",
       alt: "Innocence theme image - light through window",
       theme: "Innocence",
       credit: "Unsplash",
