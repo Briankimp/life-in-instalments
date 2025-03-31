@@ -760,7 +760,7 @@ export default function Home() {
                 debut memoir.
               </p>
               <div className="social-links flex gap-4 pt-4">
-                <Link
+                {/* <Link
                   href="https://instagram.com"
                   target="_blank"
                   aria-label="Instagram"
@@ -772,9 +772,9 @@ export default function Home() {
                   >
                     <Instagram className="h-5 w-5" />
                   </Button>
-                </Link>
+                </Link> */}
                 <Link
-                  href="https://youtube.com"
+                  href="https://youtube.com/@accidentalauthor?si=JCkHhugSHi_QPmmm"
                   target="_blank"
                   aria-label="YouTube"
                 >
@@ -787,7 +787,7 @@ export default function Home() {
                   </Button>
                 </Link>
                 <Link
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/profile.php?id=61574600643131"
                   target="_blank"
                   aria-label="Facebook"
                 >
