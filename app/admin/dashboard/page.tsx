@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import UnsplashImageSearch from "@/components/unsplash-image-search"
 import Image from "next/image"
+import RichTextEditor from "@/components/blog/rich-text-editor"
 
 interface Review {
   id: string
@@ -32,6 +33,8 @@ interface BlogPost {
   excerpt: string
   date: string
   imageUrl?: string
+  author?: string
+  category?: string
 }
 
 interface PurchaseLink {
@@ -59,6 +62,7 @@ interface ThemeImage {
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [reviews, setReviews] = useState<Review[]>([])
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [purchaseLinks, setPurchaseLinks] = useState<PurchaseLink[]>([])
@@ -75,6 +79,8 @@ export default function AdminDashboard() {
     content: "",
     excerpt: "",
     imageUrl: "",
+    author: "",
+    category: "",
   })
   const [newEvent, setNewEvent] = useState<Omit<Event, "id">>({
     title: "",
@@ -95,189 +101,236 @@ export default function AdminDashboard() {
 
   // Check if logged in
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true"
-    if (!isLoggedIn) {
+    try {
+      const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true"
+      if (!isLoggedIn) {
+        router.push("/admin")
+      } else {
+        setIsAuthenticated(true)
+        loadData()
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error)
       router.push("/admin")
-    } else {
+    } finally {
       setIsLoading(false)
-    }
-
-    // Load reviews from localStorage
-    const storedReviews = localStorage.getItem("bookReviews")
-    if (storedReviews) {
-      setReviews(JSON.parse(storedReviews))
-    } else {
-      // Initialize with default reviews if none exist
-      const defaultReviews = [
-        {
-          id: "1",
-          name: "Sarah Johnson",
-          rating: 5,
-          text: '"Life in Instalments touched me deeply. Sartorelli\'s raw honesty and beautiful prose create a narrative that is both heartbreaking and ultimately uplifting. A must-read for anyone on their own journey of healing."',
-          location: "New York Times",
-          date: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          name: "Michael Chen",
-          rating: 5,
-          text: "\"Few memoirs have the power to transform the reader as they follow the author's transformation. This book does exactly that. I couldn't put it down and found myself reflecting on my own life with new perspective.\"",
-          location: "Literary Review",
-          date: new Date().toISOString(),
-        },
-        {
-          id: "3",
-          name: "Emily Rodriguez",
-          rating: 5,
-          text: '"Danielle Sartorelli writes with such clarity and emotion that you feel as though you\'re walking alongside her through every triumph and setback. A powerful testament to the resilience of the human spirit."',
-          location: "Book Club Pick",
-          date: new Date().toISOString(),
-        },
-      ]
-      setReviews(defaultReviews)
-      localStorage.setItem("bookReviews", JSON.stringify(defaultReviews))
-    }
-
-    // Load blog posts from localStorage
-    const storedBlogPosts = localStorage.getItem("bookBlogPosts")
-    if (storedBlogPosts) {
-      setBlogPosts(JSON.parse(storedBlogPosts))
-    } else {
-      // Initialize with default blog posts if none exist
-      const defaultBlogPosts = [
-        {
-          id: "1",
-          title: "Book Tour Announcement",
-          content:
-            "I'm thrilled to announce that I'll be embarking on a nationwide tour to connect with readers and share the journey behind 'Life in Instalments'. \n\nThe tour will begin in New York City on April 15th and continue through major cities across the country. At each stop, I'll be reading excerpts from the book, answering questions, and signing copies. \n\nThis book has been such a personal journey for me, and I'm looking forward to discussing the themes of resilience, transformation, and healing with readers face-to-face. \n\nCheck the Events page for specific dates and venues. I hope to see many of you there!",
-          excerpt: "Join Danielle as she embarks on a nationwide tour to connect with readers and share her journey.",
-          date: "2025-03-10T12:00:00.000Z",
-          imageUrl: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000",
-        },
-        {
-          id: "2",
-          title: "Behind the Cover Design",
-          content:
-            "The cover of 'Life in Instalments' holds special significance to me, and I wanted to share the story behind its creation. \n\nWorking with the talented designer Maria Rodriguez, we sought to capture the essence of the book's themes: the fragments of life that eventually form a complete picture. \n\nThe golden threads represent the connections that both bind us and ultimately free us when we learn to understand them. The dark background symbolizes the journey through difficult times, while the emerging light illustrates the transformation that comes through self-discovery. \n\nMany readers have asked about the symbolism, and I'm touched by how deeply the visual elements have resonated alongside the written words.",
-          excerpt: "Discover the symbolism and creative process behind the striking cover of Life in Instalments.",
-          date: "2025-02-25T12:00:00.000Z",
-          imageUrl: "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1000",
-        },
-        {
-          id: "3",
-          title: "Reader Stories",
-          content:
-            "Since the release of 'Life in Instalments', I've been deeply moved by the personal stories readers have shared with me. \n\nMany have written to tell me how they found their own experiences reflected in the pages, and how the book has helped them process their own journeys of healing and transformation. \n\nOne reader from Seattle wrote: 'Your words gave me permission to acknowledge my own struggles and see them as part of a larger journey toward wholeness.' \n\nAnother from Miami shared: 'I've carried your book with me for weeks, returning to certain passages that feel like they were written directly to me.' \n\nThese connections are why I write, and I'm grateful to everyone who has reached out to share how the book has touched their lives.",
-          excerpt: "Heartfelt responses from readers who found their own stories reflected in the pages of the book.",
-          date: "2025-01-15T12:00:00.000Z",
-          imageUrl: "https://images.unsplash.com/photo-1485217988980-11786ced94c5?q=80&w=1000",
-        },
-      ]
-      setBlogPosts(defaultBlogPosts)
-      localStorage.setItem("bookBlogPosts", JSON.stringify(defaultBlogPosts))
-    }
-
-    // Load purchase links from localStorage
-    const storedPurchaseLinks = localStorage.getItem("bookPurchaseLinks")
-    if (storedPurchaseLinks) {
-      setPurchaseLinks(JSON.parse(storedPurchaseLinks))
-    } else {
-      // Initialize with default purchase links if none exist
-      const defaultPurchaseLinks = [
-        {
-          id: "1",
-          name: "Amazon",
-          description: "Available in hardcover, paperback, and Kindle editions",
-          imageUrl: "/placeholder.svg?height=80&width=80",
-          link: "#",
-        },
-        {
-          id: "2",
-          name: "Barnes & Noble",
-          description: "Available in hardcover, paperback, and Nook editions",
-          imageUrl: "/placeholder.svg?height=80&width=80",
-          link: "#",
-        },
-        {
-          id: "3",
-          name: "Indie Bookstores",
-          description: "Support your local bookstore and get a signed copy",
-          imageUrl: "/placeholder.svg?height=80&width=80",
-          link: "#",
-        },
-      ]
-      setPurchaseLinks(defaultPurchaseLinks)
-      localStorage.setItem("bookPurchaseLinks", JSON.stringify(defaultPurchaseLinks))
-    }
-
-    // Load events from localStorage
-    const storedEvents = localStorage.getItem("bookEvents")
-    if (storedEvents) {
-      setEvents(JSON.parse(storedEvents))
-    } else {
-      // Initialize with default events if none exist
-      const defaultEvents = [
-        {
-          id: "1",
-          title: "Book Launch Event",
-          date: "2025-05-15T18:00:00.000Z",
-          location: "Sydney Writers' Festival",
-          description:
-            "Join us for the official launch of 'Life in Instalments' with a reading and Q&A session with the author.",
-        },
-        {
-          id: "2",
-          title: "Author Talk",
-          date: "2025-06-10T19:00:00.000Z",
-          location: "Melbourne City Library",
-          description:
-            "Danielle discusses the themes of addiction, family relationships, and resilience in her memoir.",
-        },
-      ]
-      setEvents(defaultEvents)
-      localStorage.setItem("bookEvents", JSON.stringify(defaultEvents))
-    }
-
-    // Load theme images from localStorage
-    const storedThemeImages = localStorage.getItem("bookThemeImages")
-    if (storedThemeImages) {
-      setThemeImages(JSON.parse(storedThemeImages))
-    } else {
-      // Initialize with default theme images if none exist
-      const defaultThemeImages = [
-        {
-          src: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000",
-          alt: "Courage theme image - silhouette of person on mountain",
-          theme: "Courage",
-          credit: "Unsplash",
-        },
-        {
-          src: "https://images.unsplash.com/photo-1519834089823-af2d966a42c4?q=80&w=1000",
-          alt: "Resilience theme image - tree growing through rock",
-          theme: "Resilience",
-          credit: "Unsplash",
-        },
-        {
-          src: "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?q=80&w=1000",
-          alt: "Freedom theme image - butterfly",
-          theme: "Freedom",
-          credit: "Unsplash",
-        },
-        {
-          src: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1000",
-          alt: "Truth theme image - light through window",
-          theme: "Truth",
-          credit: "Unsplash",
-        },
-      ]
-      setThemeImages(defaultThemeImages)
-      localStorage.setItem("bookThemeImages", JSON.stringify(defaultThemeImages))
     }
   }, [router])
 
+  const loadData = () => {
+    try {
+      // Load reviews from localStorage
+      const storedReviews = localStorage.getItem("bookReviews")
+      if (storedReviews) {
+        setReviews(JSON.parse(storedReviews))
+      } else {
+        // Initialize with default reviews if none exist
+        const defaultReviews = [
+          {
+            id: "1",
+            name: "Sarah Johnson",
+            rating: 5,
+            text: '"Life in Instalments touched me deeply. Sartorelli\'s raw honesty and beautiful prose create a narrative that is both heartbreaking and ultimately uplifting. A must-read for anyone on their own journey of healing."',
+            location: "New York Times",
+            date: new Date().toISOString(),
+          },
+          {
+            id: "2",
+            name: "Michael Chen",
+            rating: 5,
+            text: "\"Few memoirs have the power to transform the reader as they follow the author's transformation. This book does exactly that. I couldn't put it down and found myself reflecting on my own life with new perspective.\"",
+            location: "Literary Review",
+            date: new Date().toISOString(),
+          },
+          {
+            id: "3",
+            name: "Emily Rodriguez",
+            rating: 5,
+            text: '"Danielle Sartorelli writes with such clarity and emotion that you feel as though you\'re walking alongside her through every triumph and setback. A powerful testament to the resilience of the human spirit."',
+            location: "Book Club Pick",
+            date: new Date().toISOString(),
+          },
+        ]
+        setReviews(defaultReviews)
+        try {
+          localStorage.setItem("bookReviews", JSON.stringify(defaultReviews))
+        } catch (error) {
+          console.error("Error saving reviews to localStorage:", error)
+        }
+      }
+
+      // Load blog posts from localStorage
+      const storedBlogPosts = localStorage.getItem("bookBlogPosts")
+      if (storedBlogPosts) {
+        setBlogPosts(JSON.parse(storedBlogPosts))
+      } else {
+        // Initialize with default blog posts if none exist
+        const defaultBlogPosts = [
+          {
+            id: "1",
+            title: "Book Tour Announcement",
+            content:
+              "I'm thrilled to announce that I'll be embarking on a nationwide tour to connect with readers and share the journey behind 'Life in Instalments'. \n\nThe tour will begin in New York City on April 15th and continue through major cities across the country. At each stop, I'll be reading excerpts from the book, answering questions, and signing copies. \n\nThis book has been such a personal journey for me, and I'm looking forward to discussing the themes of resilience, transformation, and healing with readers face-to-face. \n\nCheck the Events page for specific dates and venues. I hope to see many of you there!",
+            excerpt: "Join Danielle as she embarks on a nationwide tour to connect with readers and share her journey.",
+            date: "2025-03-10T12:00:00.000Z",
+            imageUrl: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000",
+            author: "Danielle Sartorelli",
+            category: "News",
+          },
+          {
+            id: "2",
+            title: "Behind the Cover Design",
+            content:
+              "The cover of 'Life in Instalments' holds special significance to me, and I wanted to share the story behind its creation. \n\nWorking with the talented designer Maria Rodriguez, we sought to capture the essence of the book's themes: the fragments of life that eventually form a complete picture. \n\nThe golden threads represent the connections that both bind us and ultimately free us when we learn to understand them. The dark background symbolizes the journey through difficult times, while the emerging light illustrates the transformation that comes through self-discovery. \n\nMany readers have asked about the symbolism, and I'm touched by how deeply the visual elements have resonated alongside the written words.",
+            excerpt: "Discover the symbolism and creative process behind the striking cover of Life in Instalments.",
+            date: "2025-02-25T12:00:00.000Z",
+            imageUrl: "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1000",
+            author: "Danielle Sartorelli",
+            category: "Behind the Scenes",
+          },
+          {
+            id: "3",
+            title: "Reader Stories",
+            content:
+              "Since the release of 'Life in Instalments', I've been deeply moved by the personal stories readers have shared with me. \n\nMany have written to tell me how they found their own experiences reflected in the pages, and how the book has helped them process their own journeys of healing and transformation. \n\nOne reader from Seattle wrote: 'Your words gave me permission to acknowledge my own struggles and see them as part of a larger journey toward wholeness.' \n\nAnother from Miami shared: 'I've carried your book with me for weeks, returning to certain passages that feel like they were written directly to me.' \n\nThese connections are why I write, and I'm grateful to everyone who has reached out to share how the book has touched their lives.",
+            excerpt: "Heartfelt responses from readers who found their own stories reflected in the pages of the book.",
+            date: "2025-01-15T12:00:00.000Z",
+            imageUrl: "https://images.unsplash.com/photo-1485217988980-11786ced94c5?q=80&w=1000",
+            author: "Danielle Sartorelli",
+            category: "Reader Feedback",
+          },
+        ]
+        setBlogPosts(defaultBlogPosts)
+        try {
+          localStorage.setItem("bookBlogPosts", JSON.stringify(defaultBlogPosts))
+        } catch (error) {
+          console.error("Error saving blog posts to localStorage:", error)
+        }
+      }
+
+      // Load purchase links from localStorage
+      const storedPurchaseLinks = localStorage.getItem("bookPurchaseLinks")
+      if (storedPurchaseLinks) {
+        setPurchaseLinks(JSON.parse(storedPurchaseLinks))
+      } else {
+        // Initialize with default purchase links if none exist
+        const defaultPurchaseLinks = [
+          {
+            id: "1",
+            name: "Amazon",
+            description: "Available in hardcover, paperback, and Kindle editions",
+            imageUrl: "/placeholder.svg?height=80&width=80",
+            link: "#",
+          },
+          {
+            id: "2",
+            name: "Barnes & Noble",
+            description: "Available in hardcover, paperback, and Nook editions",
+            imageUrl: "/placeholder.svg?height=80&width=80",
+            link: "#",
+          },
+          {
+            id: "3",
+            name: "Indie Bookstores",
+            description: "Support your local bookstore and get a signed copy",
+            imageUrl: "/placeholder.svg?height=80&width=80",
+            link: "#",
+          },
+        ]
+        setPurchaseLinks(defaultPurchaseLinks)
+        try {
+          localStorage.setItem("bookPurchaseLinks", JSON.stringify(defaultPurchaseLinks))
+        } catch (error) {
+          console.error("Error saving purchase links to localStorage:", error)
+        }
+      }
+
+      // Load events from localStorage
+      const storedEvents = localStorage.getItem("bookEvents")
+      if (storedEvents) {
+        setEvents(JSON.parse(storedEvents))
+      } else {
+        // Initialize with default events if none exist
+        const defaultEvents = [
+          {
+            id: "1",
+            title: "Book Launch Event",
+            date: "2025-05-15T18:00:00.000Z",
+            location: "Sydney Writers' Festival",
+            description:
+              "Join us for the official launch of 'Life in Instalments' with a reading and Q&A session with the author.",
+          },
+          {
+            id: "2",
+            title: "Author Talk",
+            date: "2025-06-10T19:00:00.000Z",
+            location: "Melbourne City Library",
+            description:
+              "Danielle discusses the themes of addiction, family relationships, and resilience in her memoir.",
+          },
+        ]
+        setEvents(defaultEvents)
+        try {
+          localStorage.setItem("bookEvents", JSON.stringify(defaultEvents))
+        } catch (error) {
+          console.error("Error saving events to localStorage:", error)
+        }
+      }
+
+      // Load theme images from localStorage
+      const storedThemeImages = localStorage.getItem("bookThemeImages")
+      if (storedThemeImages) {
+        setThemeImages(JSON.parse(storedThemeImages))
+      } else {
+        // Initialize with default theme images if none exist
+        const defaultThemeImages = [
+          {
+            src: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000",
+            alt: "Courage theme image - silhouette of person on mountain",
+            theme: "Courage",
+            credit: "Unsplash",
+          },
+          {
+            src: "https://images.unsplash.com/photo-1519834089823-af2d966a42c4?q=80&w=1000",
+            alt: "Resilience theme image - tree growing through rock",
+            theme: "Resilience",
+            credit: "Unsplash",
+          },
+          {
+            src: "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?q=80&w=1000",
+            alt: "Freedom theme image - butterfly",
+            theme: "Freedom",
+            credit: "Unsplash",
+          },
+          {
+            src: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1000",
+            alt: "Truth theme image - light through window",
+            theme: "Truth",
+            credit: "Unsplash",
+          },
+        ]
+        setThemeImages(defaultThemeImages)
+        try {
+          localStorage.setItem("bookThemeImages", JSON.stringify(defaultThemeImages))
+        } catch (error) {
+          console.error("Error saving theme images to localStorage:", error)
+        }
+      }
+    } catch (error) {
+      console.error("Error loading data:", error)
+      setSuccessMessage("Error loading data. Some features may not work correctly.")
+    }
+  }
+
   const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn")
-    router.push("/admin")
+    try {
+      localStorage.removeItem("adminLoggedIn")
+      router.push("/admin")
+    } catch (error) {
+      console.error("Error during logout:", error)
+      // Force redirect even if localStorage fails
+      router.push("/admin")
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -292,78 +345,110 @@ export default function AdminDashboard() {
   const handleAddReview = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Create new review
-    const review: Review = {
-      id: Date.now().toString(),
-      ...newReview,
-      date: new Date().toISOString(),
+    try {
+      // Create new review
+      const review: Review = {
+        id: Date.now().toString(),
+        ...newReview,
+        date: new Date().toISOString(),
+      }
+
+      // Add to reviews array
+      const updatedReviews = [...reviews, review]
+      setReviews(updatedReviews)
+
+      // Save to localStorage
+      localStorage.setItem("bookReviews", JSON.stringify(updatedReviews))
+
+      // Reset form
+      setNewReview({
+        name: "",
+        text: "",
+        rating: 5,
+        location: "",
+      })
+
+      // Show success message
+      setSuccessMessage("Review added successfully!")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    } catch (error) {
+      console.error("Error adding review:", error)
+      setSuccessMessage("Error adding review. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
     }
-
-    // Add to reviews array
-    const updatedReviews = [...reviews, review]
-    setReviews(updatedReviews)
-
-    // Save to localStorage
-    localStorage.setItem("bookReviews", JSON.stringify(updatedReviews))
-
-    // Reset form
-    setNewReview({
-      name: "",
-      text: "",
-      rating: 5,
-      location: "",
-    })
-
-    // Show success message
-    setSuccessMessage("Review added successfully!")
-    setTimeout(() => setSuccessMessage(""), 3000)
   }
 
   const handleDeleteReview = (id: string) => {
-    const updatedReviews = reviews.filter((review) => review.id !== id)
-    setReviews(updatedReviews)
-    localStorage.setItem("bookReviews", JSON.stringify(updatedReviews))
+    try {
+      const updatedReviews = reviews.filter((review) => review.id !== id)
+      setReviews(updatedReviews)
+      localStorage.setItem("bookReviews", JSON.stringify(updatedReviews))
+    } catch (error) {
+      console.error("Error deleting review:", error)
+      setSuccessMessage("Error deleting review. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    }
   }
 
   const handleBlogInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setNewBlogPost((prev) => ({ ...prev, [name]: value }))
+
+    // Auto-generate excerpt from content if it's empty
+    if (name === "content" && !newBlogPost.excerpt) {
+      const excerpt = value.substring(0, 150).trim() + (value.length > 150 ? "..." : "")
+      setNewBlogPost((prev) => ({ ...prev, excerpt }))
+    }
   }
 
   const handleAddBlogPost = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Create new blog post
-    const blogPost: BlogPost = {
-      id: Date.now().toString(),
-      ...newBlogPost,
-      date: new Date().toISOString(),
+    try {
+      // Create new blog post
+      const blogPost: BlogPost = {
+        id: Date.now().toString(),
+        ...newBlogPost,
+        date: new Date().toISOString(),
+      }
+
+      // Add to blog posts array
+      const updatedBlogPosts = [...blogPosts, blogPost]
+      setBlogPosts(updatedBlogPosts)
+
+      // Save to localStorage
+      localStorage.setItem("bookBlogPosts", JSON.stringify(updatedBlogPosts))
+
+      // Reset form
+      setNewBlogPost({
+        title: "",
+        content: "",
+        excerpt: "",
+        imageUrl: "",
+        author: "",
+        category: "",
+      })
+
+      // Show success message
+      setSuccessMessage("Blog post added successfully!")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    } catch (error) {
+      console.error("Error adding blog post:", error)
+      setSuccessMessage("Error adding blog post. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
     }
-
-    // Add to blog posts array
-    const updatedBlogPosts = [...blogPosts, blogPost]
-    setBlogPosts(updatedBlogPosts)
-
-    // Save to localStorage
-    localStorage.setItem("bookBlogPosts", JSON.stringify(updatedBlogPosts))
-
-    // Reset form
-    setNewBlogPost({
-      title: "",
-      content: "",
-      excerpt: "",
-      imageUrl: "",
-    })
-
-    // Show success message
-    setSuccessMessage("Blog post added successfully!")
-    setTimeout(() => setSuccessMessage(""), 3000)
   }
 
   const handleDeleteBlogPost = (id: string) => {
-    const updatedBlogPosts = blogPosts.filter((post) => post.id !== id)
-    setBlogPosts(updatedBlogPosts)
-    localStorage.setItem("bookBlogPosts", JSON.stringify(updatedBlogPosts))
+    try {
+      const updatedBlogPosts = blogPosts.filter((post) => post.id !== id)
+      setBlogPosts(updatedBlogPosts)
+      localStorage.setItem("bookBlogPosts", JSON.stringify(updatedBlogPosts))
+    } catch (error) {
+      console.error("Error deleting blog post:", error)
+      setSuccessMessage("Error deleting blog post. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    }
   }
 
   const handleEventInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -374,36 +459,48 @@ export default function AdminDashboard() {
   const handleAddEvent = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Create new event
-    const event: Event = {
-      id: Date.now().toString(),
-      ...newEvent,
+    try {
+      // Create new event
+      const event: Event = {
+        id: Date.now().toString(),
+        ...newEvent,
+      }
+
+      // Add to events array
+      const updatedEvents = [...events, event]
+      setEvents(updatedEvents)
+
+      // Save to localStorage
+      localStorage.setItem("bookEvents", JSON.stringify(updatedEvents))
+
+      // Reset form
+      setNewEvent({
+        title: "",
+        date: new Date().toISOString(),
+        location: "",
+        description: "",
+      })
+
+      // Show success message
+      setSuccessMessage("Event added successfully!")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    } catch (error) {
+      console.error("Error adding event:", error)
+      setSuccessMessage("Error adding event. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
     }
-
-    // Add to events array
-    const updatedEvents = [...events, event]
-    setEvents(updatedEvents)
-
-    // Save to localStorage
-    localStorage.setItem("bookEvents", JSON.stringify(updatedEvents))
-
-    // Reset form
-    setNewEvent({
-      title: "",
-      date: new Date().toISOString(),
-      location: "",
-      description: "",
-    })
-
-    // Show success message
-    setSuccessMessage("Event added successfully!")
-    setTimeout(() => setSuccessMessage(""), 3000)
   }
 
   const handleDeleteEvent = (id: string) => {
-    const updatedEvents = events.filter((event) => event.id !== id)
-    setEvents(updatedEvents)
-    localStorage.setItem("bookEvents", JSON.stringify(updatedEvents))
+    try {
+      const updatedEvents = events.filter((event) => event.id !== id)
+      setEvents(updatedEvents)
+      localStorage.setItem("bookEvents", JSON.stringify(updatedEvents))
+    } catch (error) {
+      console.error("Error deleting event:", error)
+      setSuccessMessage("Error deleting event. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    }
   }
 
   const handlePurchaseLinkInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -414,36 +511,48 @@ export default function AdminDashboard() {
   const handleAddPurchaseLink = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Create new purchase link
-    const purchaseLink: PurchaseLink = {
-      id: Date.now().toString(),
-      ...newPurchaseLink,
+    try {
+      // Create new purchase link
+      const purchaseLink: PurchaseLink = {
+        id: Date.now().toString(),
+        ...newPurchaseLink,
+      }
+
+      // Add to purchase links array
+      const updatedPurchaseLinks = [...purchaseLinks, purchaseLink]
+      setPurchaseLinks(updatedPurchaseLinks)
+
+      // Save to localStorage
+      localStorage.setItem("bookPurchaseLinks", JSON.stringify(updatedPurchaseLinks))
+
+      // Reset form
+      setNewPurchaseLink({
+        name: "",
+        description: "",
+        imageUrl: "/placeholder.svg?height=80&width=80",
+        link: "",
+      })
+
+      // Show success message
+      setSuccessMessage("Purchase link added successfully!")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    } catch (error) {
+      console.error("Error adding purchase link:", error)
+      setSuccessMessage("Error adding purchase link. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
     }
-
-    // Add to purchase links array
-    const updatedPurchaseLinks = [...purchaseLinks, purchaseLink]
-    setPurchaseLinks(updatedPurchaseLinks)
-
-    // Save to localStorage
-    localStorage.setItem("bookPurchaseLinks", JSON.stringify(updatedPurchaseLinks))
-
-    // Reset form
-    setNewPurchaseLink({
-      name: "",
-      description: "",
-      imageUrl: "/placeholder.svg?height=80&width=80",
-      link: "",
-    })
-
-    // Show success message
-    setSuccessMessage("Purchase link added successfully!")
-    setTimeout(() => setSuccessMessage(""), 3000)
   }
 
   const handleDeletePurchaseLink = (id: string) => {
-    const updatedPurchaseLinks = purchaseLinks.filter((link) => link.id !== id)
-    setPurchaseLinks(updatedPurchaseLinks)
-    localStorage.setItem("bookPurchaseLinks", JSON.stringify(updatedPurchaseLinks))
+    try {
+      const updatedPurchaseLinks = purchaseLinks.filter((link) => link.id !== id)
+      setPurchaseLinks(updatedPurchaseLinks)
+      localStorage.setItem("bookPurchaseLinks", JSON.stringify(updatedPurchaseLinks))
+    } catch (error) {
+      console.error("Error deleting purchase link:", error)
+      setSuccessMessage("Error deleting purchase link. Please try again.")
+      setTimeout(() => setSuccessMessage(""), 3000)
+    }
   }
 
   const handleEditThemeImage = (index: number) => {
@@ -459,14 +568,20 @@ export default function AdminDashboard() {
   }
 
   const handleSaveThemeImage = () => {
-    if (editingThemeImage && editingThemeIndex !== null) {
-      const updatedThemeImages = [...themeImages]
-      updatedThemeImages[editingThemeIndex] = editingThemeImage
-      setThemeImages(updatedThemeImages)
-      localStorage.setItem("bookThemeImages", JSON.stringify(updatedThemeImages))
-      setEditingThemeImage(null)
-      setEditingThemeIndex(null)
-      setSuccessMessage("Theme image updated successfully!")
+    try {
+      if (editingThemeImage && editingThemeIndex !== null) {
+        const updatedThemeImages = [...themeImages]
+        updatedThemeImages[editingThemeIndex] = editingThemeImage
+        setThemeImages(updatedThemeImages)
+        localStorage.setItem("bookThemeImages", JSON.stringify(updatedThemeImages))
+        setEditingThemeImage(null)
+        setEditingThemeIndex(null)
+        setSuccessMessage("Theme image updated successfully!")
+        setTimeout(() => setSuccessMessage(""), 3000)
+      }
+    } catch (error) {
+      console.error("Error saving theme image:", error)
+      setSuccessMessage("Error saving theme image. Please try again.")
       setTimeout(() => setSuccessMessage(""), 3000)
     }
   }
@@ -475,6 +590,23 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <p className="text-gold">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gold mb-4">You need to log in to access this page</p>
+          <Button
+            variant="outline"
+            className="border-gold text-gold hover:bg-gold hover:text-black"
+            onClick={() => router.push("/admin")}
+          >
+            Go to Login
+          </Button>
+        </div>
       </div>
     )
   }
@@ -548,6 +680,30 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="space-y-2">
+                    <Label htmlFor="author">Author</Label>
+                    <Input
+                      id="author"
+                      name="author"
+                      value={newBlogPost.author || ""}
+                      onChange={handleBlogInputChange}
+                      className="bg-gray-800 border-gray-700 focus:border-gold"
+                      placeholder="Leave blank to use default author"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <Input
+                      id="category"
+                      name="category"
+                      value={newBlogPost.category || ""}
+                      onChange={handleBlogInputChange}
+                      className="bg-gray-800 border-gray-700 focus:border-gold"
+                      placeholder="E.g., News, Events, Writing Tips"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="excerpt">Short Excerpt (displayed on homepage)</Label>
                     <Input
                       id="excerpt"
@@ -604,17 +760,11 @@ export default function AdminDashboard() {
 
                   <div className="space-y-2">
                     <Label htmlFor="content">Blog Content</Label>
-                    <Textarea
-                      id="content"
-                      name="content"
+                    <RichTextEditor
                       value={newBlogPost.content}
-                      onChange={handleBlogInputChange}
-                      className="bg-gray-800 border-gray-700 focus:border-gold min-h-[200px]"
-                      required
+                      onChange={(value) => setNewBlogPost((prev) => ({ ...prev, content: value }))}
+                      minHeight="300px"
                     />
-                    <p className="text-xs text-gray-400">
-                      Use double line breaks for paragraphs. Basic formatting will be applied automatically.
-                    </p>
                   </div>
 
                   <Button type="submit" className="w-full bg-gold hover:bg-gold/80 text-black">
@@ -648,6 +798,8 @@ export default function AdminDashboard() {
                               month: "long",
                               day: "numeric",
                             })}
+                            {post.author && <span> · By {post.author}</span>}
+                            {post.category && <span className="ml-2 text-gold">#{post.category}</span>}
                           </p>
                           <p className="text-gray-300 mt-2 italic">{post.excerpt}</p>
                           <div className="mt-3 text-sm text-gray-400">
