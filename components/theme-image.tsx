@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils"
 interface ThemeImageProps {
   src: string
   alt: string
-  theme: string
+  // theme: string
 }
 
-export default function ThemeImage({ src, alt, theme }: ThemeImageProps) {
+export default function ThemeImage({ src, alt }: ThemeImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   return (
@@ -23,9 +23,9 @@ export default function ThemeImage({ src, alt, theme }: ThemeImageProps) {
         onLoad={() => setIsLoaded(true)}
       />
       <div className="absolute inset-0 bg-black/40 group-hover:bg-gold/30 transition-all duration-300"></div>
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+      {/* <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
         <p className="text-white text-center px-4 font-serif text-xl">{theme}</p>
-      </div>
+      </div> */}
     </div>
   )
 }

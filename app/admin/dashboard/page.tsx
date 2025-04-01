@@ -277,45 +277,7 @@ export default function AdminDashboard() {
         }
       }
 
-      // Load theme images from localStorage
-      const storedThemeImages = localStorage.getItem("bookThemeImages")
-      if (storedThemeImages) {
-        setThemeImages(JSON.parse(storedThemeImages))
-      } else {
-        // Initialize with default theme images if none exist
-        const defaultThemeImages = [
-          {
-            src: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000",
-            alt: "Courage theme image - silhouette of person on mountain",
-            theme: "Courage",
-            credit: "Unsplash",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1519834089823-af2d966a42c4?q=80&w=1000",
-            alt: "Resilience theme image - tree growing through rock",
-            theme: "Resilience",
-            credit: "Unsplash",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?q=80&w=1000",
-            alt: "Freedom theme image - butterfly",
-            theme: "Freedom",
-            credit: "Unsplash",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1000",
-            alt: "Truth theme image - light through window",
-            theme: "Truth",
-            credit: "Unsplash",
-          },
-        ]
-        setThemeImages(defaultThemeImages)
-        try {
-          localStorage.setItem("bookThemeImages", JSON.stringify(defaultThemeImages))
-        } catch (error) {
-          console.error("Error saving theme images to localStorage:", error)
-        }
-      }
+  
     } catch (error) {
       console.error("Error loading data:", error)
       setSuccessMessage("Error loading data. Some features may not work correctly.")
@@ -647,9 +609,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="manage-purchase" className="data-[state=active]:bg-gold data-[state=active]:text-black">
               Purchase Links
             </TabsTrigger>
-            <TabsTrigger value="manage-themes" className="data-[state=active]:bg-gold data-[state=active]:text-black">
-              Theme Images
-            </TabsTrigger>
+        
           </TabsList>
 
           {successMessage && (
@@ -1185,117 +1145,7 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
-          {/* Theme Images Tab */}
-          <TabsContent value="manage-themes">
-            <Card className="bg-gray-900 border-gray-800 mb-8">
-              <CardHeader>
-                <CardTitle className="text-xl font-serif">Manage Theme Images</CardTitle>
-                <CardDescription>Edit the theme images displayed in the About section</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  {themeImages.map((image, index) => (
-                    <div key={index} className="relative group">
-                      <div className="aspect-square bg-gray-900 rounded-md overflow-hidden relative">
-                        <Image src={image.src || "/placeholder.svg"} alt={image.alt} fill className="object-cover" />
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-gold/30 transition-all duration-300"></div>
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                          <p className="text-white text-center px-4 font-serif text-xl">{image.theme}</p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="absolute top-2 right-2 bg-black/50 border-gold/50 text-gold hover:bg-gold hover:text-black opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleEditThemeImage(index)}
-                      >
-                        <Edit className="h-3 w-3 mr-1" /> Edit
-                      </Button>
-                      <p className="text-xs text-gray-400 mt-1 truncate">{image.theme}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {editingThemeImage && (
-                  <div className="border border-gray-700 rounded-md p-4 bg-gray-900/50 mt-6">
-                    <h4 className="text-lg font-serif mb-4">Edit Theme Image</h4>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="theme">Theme Name</Label>
-                        <Input
-                          id="theme"
-                          name="theme"
-                          value={editingThemeImage.theme}
-                          onChange={handleThemeImageInputChange}
-                          className="bg-gray-800 border-gray-700 focus:border-gold"
-                          required
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="src">Image URL</Label>
-                        <Input
-                          id="src"
-                          name="src"
-                          value={editingThemeImage.src}
-                          onChange={handleThemeImageInputChange}
-                          className="bg-gray-800 border-gray-700 focus:border-gold"
-                          required
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="alt">Alt Text</Label>
-                        <Input
-                          id="alt"
-                          name="alt"
-                          value={editingThemeImage.alt}
-                          onChange={handleThemeImageInputChange}
-                          className="bg-gray-800 border-gray-700 focus:border-gold"
-                          required
-                        />
-                      </div>
-
-                      <div className="flex gap-2 justify-end">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="border-gray-700 text-gray-300"
-                          onClick={() => {
-                            setEditingThemeImage(null)
-                            setEditingThemeIndex(null)
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="button"
-                          className="bg-gold hover:bg-gold/80 text-black"
-                          onClick={handleSaveThemeImage}
-                        >
-                          Save Changes
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-6 p-4 bg-gray-800/50 rounded-md border border-gray-700">
-                  <h4 className="text-sm font-medium mb-2 flex items-center">
-                    <ImageIcon className="h-4 w-4 mr-2 text-gold" />
-                    Search Unsplash for Theme Images
-                  </h4>
-                  <UnsplashImageSearch
-                    onSelectImage={(url) => {
-                      if (editingThemeImage) {
-                        setEditingThemeImage((prev) => (prev ? { ...prev, src: url } : null))
-                      }
-                    }}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+       
         </Tabs>
 
         <div className="mt-8 p-6 bg-gray-900 border border-gray-800 rounded-md">
