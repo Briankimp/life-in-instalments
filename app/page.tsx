@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -99,25 +98,25 @@ export default function Home() {
   const [themeImages, setThemeImages] = useState([
     {
       src: "/Consequences.jpg",
-      alt: "Consequences theme image - silhouette of person on mountain",
+      alt: "Consequences",
       theme: "Consequences",
       credit: "Unsplash",
     },
     {
       src: "/Redemption.jpg",
-      alt: "Redemption theme image - tree growing through rock",
+      alt: "Redemption ",
       theme: "Redemption",
       credit: "Unsplash",
     },
     {
       src: "/Hope.jpg",
-      alt: "Hope theme image - butterfly",
+      alt: "Hope theme ",
       theme: "Hope",
       credit: "Unsplash",
     },
     {
       src: "/innocence.jpg",
-      alt: "Innocence theme image - light through window",
+      alt: "Innocence theme ",
       theme: "Innocence",
       credit: "Unsplash",
     },
@@ -620,9 +619,9 @@ export default function Home() {
           </div>
           <div className="md:hidden">
             {/* Mobile menu button would go here */}
-            <Button variant="ghost" size="sm" className="text-gold">
+            {/* <Button variant="ghost" size="sm" className="text-gold">
               Menu
-            </Button>
+            </Button> */}
           </div>
         </div>
       </nav>
@@ -712,7 +711,7 @@ export default function Home() {
                   key={index}
                   src={image.src}
                   alt={image.alt}
-                  theme={image.theme}
+                  // theme={image.theme}
                 />
               ))}
             </div>
