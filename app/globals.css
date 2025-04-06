@@ -135,3 +135,33 @@ html {
   background: hsl(var(--gold) / 0.8);
 }
 
+/* Prose styling for blog content */
+.prose {
+  @apply text-gray-300;
+}
+
+.prose a {
+  @apply text-gold hover:text-gold/80;
+}
+
+.prose-gold {
+  --tw-prose-links: hsl(var(--gold));
+  --tw-prose-invert-links: hsl(var(--gold));
+}
+
+.prose p {
+  @apply mb-6;
+}
+
+.prose h2 {
+  @apply text-2xl font-serif mt-8 mb-4 text-white;
+}
+
+.prose h3 {
+  @apply text-xl font-serif mt-6 mb-3 text-white;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-gold pl-4 italic text-gray-400;
+}
+

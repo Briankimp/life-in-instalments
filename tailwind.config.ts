@@ -70,9 +70,22 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "65ch",
+            color: "var(--tw-prose-body)",
+            a: {
+              color: "var(--tw-prose-links)",
+              textDecoration: "underline",
+              fontWeight: "500",
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config
 
 export default config

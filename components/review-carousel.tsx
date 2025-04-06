@@ -1,149 +1,159 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { gsap } from "gsap"
-import { ArrowLeft, ArrowRight, Star } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-interface Review {
-  id: string
-  name: string
-  text: string
-  rating: number
-  location: string
-  date?: string
-}
+// Static reviews data
+const STATIC_REVIEWS = [
+  {
+    id: "1",
+    name: "Sarah Johnson",
+    rating: 5,
+    text: '"Life in Instalments touched me deeply. Sartorelli\'s raw honesty and beautiful prose create a narrative that is both heartbreaking and ultimately uplifting. A must-read for anyone on their own journey of healing."',
+    location: "New York Times",
+    date: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    name: "Michael Chen",
+    rating: 5,
+    text: "\"Few memoirs have the power to transform the reader as they follow the author's transformation. This book does exactly that. I couldn't put it down and found myself reflecting on my own life with new perspective.\"",
+    location: "Literary Review",
+    date: new Date().toISOString(),
+  },
+  {
+    id: "3",
+    name: "Emily Rodriguez",
+    rating: 5,
+    text: '"Danielle Sartorelli writes with such clarity and emotion that you feel as though you\'re walking alongside her through every triumph and setback. A powerful testament to the resilience of the human spirit."',
+    location: "Book Club Pick",
+    date: new Date().toISOString(),
+  },
+]
 
 export default function ReviewCarousel() {
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const carouselRef = useRef<HTMLDivElement>(null)
-  const reviewsRef = useRef<HTMLDivElement[]>([])
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [direction, setDirection] = useState<"next" | "prev">("next")
 
-  // Load reviews from localStorage if available
-  useEffect(() => {
-    const storedReviews = localStorage.getItem("bookReviews")
-    if (storedReviews) {
-      try {
-        const parsedReviews = JSON.parse(storedReviews)
-        setReviews(parsedReviews)
-        // Reset reviewsRef array to match the new reviews length
-        reviewsRef.current = reviewsRef.current.slice(0, parsedReviews.length)
-      } catch (error) {
-        console.error("Error parsing reviews:", error)
-      }
-    }
-  }, [])
+  const reviews = STATIC_REVIEWS
 
-  const nextReview = () => {
-    if (reviews.length === 0) return
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length)
+  const goToNextReview = () => {
+    if (isAnimating || reviews.length <= 1) return
+    setDirection("next")
+    setIsAnimating(true)
+    setCurrentReviewIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1))
+    setTimeout(() => setIsAnimating(false), 500)
   }
 
-  const prevReview = () => {
-    if (reviews.length === 0) return
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + reviews.length) % reviews.length)
+  const goToPrevReview = () => {
+    if (isAnimating || reviews.length <= 1) return
+    setDirection("prev")
+    setIsAnimating(true)
+    setCurrentReviewIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1))
+    setTimeout(() => setIsAnimating(false), 500)
   }
 
+  // Auto-rotate reviews
   useEffect(() => {
-    if (!carouselRef.current || reviews.length === 0) return
-
-    const ctx = gsap.context(() => {
-      // Animate out all reviews
-      gsap.to(reviewsRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.3,
-      })
-
-      // Animate in current review
-      if (reviewsRef.current[currentIndex]) {
-        gsap.to(reviewsRef.current[currentIndex], {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          delay: 0.3,
-        })
-      }
-    }, carouselRef)
-
-    return () => ctx.revert()
-  }, [currentIndex, reviews.length])
-
-  // Auto-advance carousel
-  useEffect(() => {
-    if (reviews.length <= 1) return // Don't auto-advance if there's only one review
+    if (reviews.length <= 1) return
 
     const interval = setInterval(() => {
-      nextReview()
+      goToNextReview()
     }, 8000)
 
     return () => clearInterval(interval)
-  }, [reviews.length])
+  }, [reviews.length, currentReviewIndex, isAnimating])
 
   if (reviews.length === 0) {
-    return (
-      <div className="min-h-[200px] flex items-center justify-center">
-        <p className="text-gray-400">No reviews available</p>
-      </div>
-    )
+    return <div className="text-center py-12 text-gray-400">No reviews available at this time.</div>
   }
 
+  const currentReview = reviews[currentReviewIndex]
+
   return (
-    <div ref={carouselRef} className="relative">
-      <div className="min-h-[300px] flex items-center justify-center">
-        {reviews.map((review, index) => (
-          <div
-            key={review.id}
-            ref={(el) => {
-              if (el) reviewsRef.current[index] = el
-            }}
-            className={`absolute w-full max-w-2xl mx-auto p-8 bg-black/50 rounded-lg border border-gold/20 text-center ${
-              index === currentIndex ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-          >
+    <div className="relative">
+      <div className="overflow-hidden py-8">
+        <div
+          className={`transform transition-all duration-500 ease-in-out ${
+            isAnimating
+              ? direction === "next"
+                ? "-translate-x-[100px] opacity-0"
+                : "translate-x-[100px] opacity-0"
+              : "translate-x-0 opacity-100"
+          }`}
+        >
+          <div className="text-center">
             <div className="flex justify-center mb-4">
-              {[...Array(review.rating)].map((_, i) => (
-                <Star key={i} className="h-5 w-5 text-gold fill-gold" />
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-6 w-6 ${i < currentReview.rating ? "text-gold fill-gold" : "text-gray-500"}`}
+                />
               ))}
             </div>
-            <blockquote className="text-xl md:text-2xl italic mb-6">{review.text}</blockquote>
-            <div>
-              <p className="font-serif text-lg">{review.name}</p>
-              <p className="text-gold text-sm">{review.location}</p>
-            </div>
+            <blockquote className="text-xl md:text-2xl font-serif italic mb-6">{currentReview.text}</blockquote>
+            <div className="text-gold font-serif text-lg">{currentReview.name}</div>
+            {currentReview.location && <div className="text-gray-400">{currentReview.location}</div>}
           </div>
-        ))}
+        </div>
       </div>
 
-      <div className="flex justify-center gap-4 mt-8">
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-full border-gold/50 text-gold hover:bg-gold hover:text-black"
-          onClick={prevReview}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex gap-2">
-          {reviews.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full ${index === currentIndex ? "bg-gold" : "bg-gray-600 hover:bg-gray-400"}`}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to review ${index + 1}`}
-            />
-          ))}
+      {reviews.length > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full border-gray-700 text-gray-300 hover:border-gold hover:text-gold"
+            onClick={goToPrevReview}
+            disabled={isAnimating}
+          >
+            <span className="sr-only">Previous review</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </Button>
+          <div className="flex gap-1 items-center">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === currentReviewIndex ? "bg-gold w-4" : "bg-gray-600 hover:bg-gray-500"
+                }`}
+                onClick={() => {
+                  if (isAnimating) return
+                  setDirection(index > currentReviewIndex ? "next" : "prev")
+                  setIsAnimating(true)
+                  setCurrentReviewIndex(index)
+                  setTimeout(() => setIsAnimating(false), 500)
+                }}
+                aria-label={`Go to review ${index + 1}`}
+              />
+            ))}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full border-gray-700 text-gray-300 hover:border-gold hover:text-gold"
+            onClick={goToNextReview}
+            disabled={isAnimating}
+          >
+            <span className="sr-only">Next review</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-full border-gold/50 text-gold hover:bg-gold hover:text-black"
-          onClick={nextReview}
-        >
-          <ArrowRight className="h-5 w-5" />
-        </Button>
-      </div>
+      )}
     </div>
   )
 }
