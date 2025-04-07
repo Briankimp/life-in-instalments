@@ -55,7 +55,7 @@ export default function BookCover({ imageUrl }: BookCoverProps) {
       {/* Book cover */}
       <div className="relative w-full h-full rounded-md overflow-hidden">
         <Image
-          src={imageUrl || "/placeholder.svg"}
+          src="/bookcover.jpg"
           alt="Life in Instalments Book Cover"
           fill
           className="object-cover rounded-md"
