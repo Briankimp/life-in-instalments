@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Instagram, Youtube, Facebook, Loader2 } from "lucide-react"
+import { ArrowRight, Instagram, Youtube, Facebook, Loader2, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -60,21 +60,21 @@ const STATIC_DATA = {
       id: "1",
       name: "Amazon",
       description: "Available in hardcover, paperback, and Kindle editions",
-      imageUrl: "/placeholder.svg?height=80&width=80",
+      imageUrl: "/bookcover",
       link: "#",
     },
     {
       id: "2",
       name: "Barnes & Noble",
       description: "Available in hardcover, paperback, and Nook editions",
-      imageUrl: "/placeholder.svg?height=80&width=80",
+      imageUrl: "/bookcover",
       link: "#",
     },
     {
       id: "3",
       name: "Indie Bookstores",
       description: "Support your local bookstore and get a signed copy",
-      imageUrl: "/placeholder.svg?height=80&width=80",
+      imageUrl: "/bookcover",
       link: "#",
     },
   ],
@@ -507,9 +507,9 @@ export default function Home() {
           </div>
           <div className="md:hidden">
             {/* Mobile menu button would go here */}
-            <Button variant="ghost" size="sm" className="text-gold">
+            {/* <Button variant="ghost" size="sm" className="text-gold">
               Menu
-            </Button>
+            </Button> */}
           </div>
         </div>
       </nav>
@@ -524,7 +524,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-10 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-8 md:gap-16 z-10">
           <div className="md:w-1/2 flex justify-center">
-            <BookCover imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/life%20intsllamnst.jpg-PaWhNjesxiciN2QwwTdsEDblxf701m.jpeg" />
+            <BookCover imageUrl="/bookcover" />
           </div>
           <div className="md:w-1/2 space-y-6 text-center md:text-left">
             <h1 className="hero-title text-4xl md:text-6xl font-serif font-bold">
@@ -563,23 +563,30 @@ export default function Home() {
           </h2>
           <AnimatedDivider />
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="about-text space-y-6">
+          <div className="about-text space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
                 <span className="text-gold text-2xl font-serif">"</span>
-                <span className="italic">Life in Instalments</span> is a raw and emotional memoir that chronicles the
-                heartbreaking journey of being a sister to a brother lost to addiction and crime, revealing how even the
-                most ordinary moments can give way to unimaginable chaos.
+                <span className="italic">Life in Instalments</span> is a raw and
+                emotional memoir that chronicles the heartbreaking journey of
+                being a sister to a brother lost to addiction and crime,
+                revealing how even the most ordinary moments can give way to
+                unimaginable chaos.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                Through years of struggle, Danielle grapples with the painful reality of her brother James's descent
-                into drug addiction, criminal activity, and the relentless toll it takes on their family. From childhood
-                adventures filled with innocence to the crushing weight of legal troubles, her story vividly portrays
-                the turbulence and heartbreak that addiction inflicts on everyone it touches.
+                Through years of struggle, Danielle grapples with the painful
+                reality of her brother James's descent into drug addiction,
+                criminal activity, and the relentless toll it takes on their
+                family. From childhood adventures filled with innocence to the
+                crushing weight of legal troubles, her story vividly portrays
+                the turbulence and heartbreak that addiction inflicts on
+                everyone it touches.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                With unflinching honesty, this memoir explores the complex dynamics of family, love, guilt, and the
-                devastating consequences of addiction. It is a story of hope, heartbreak, and the gut-wrenching reality
-                of trying—and failing—to save someone you love from themselves.
+                With unflinching honesty, this memoir explores the complex
+                dynamics of family, love, guilt, and the devastating
+                consequences of addiction. It is a story of hope, heartbreak,
+                and the gut-wrenching reality of trying—and failing—to save
+                someone you love from themselves.
               </p>
             </div>
             <div className="theme-grid grid grid-cols-2 gap-4">
@@ -599,7 +606,11 @@ export default function Home() {
       </section>
 
       {/* About the Author */}
-      <section id="author" ref={authorRef} className="py-24 bg-gray-950 relative">
+      <section
+        id="author"
+        ref={authorRef}
+        className="py-24 bg-gray-950 relative"
+      >
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="author-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -609,19 +620,28 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="author-text order-2 md:order-1 space-y-6">
               <p className="text-lg md:text-xl leading-relaxed">
-                Danielle Sartorelli is a writer whose work explores the complexities of family relationships, addiction,
-                and the human capacity for resilience in the face of overwhelming challenges.
+                Danielle Sartorelli is a writer whose work explores the
+                complexities of family relationships, addiction, and the human
+                capacity for resilience in the face of overwhelming challenges.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                Drawing from her own experiences, Danielle crafts narratives that are both deeply personal and
-                universally resonant, inviting readers to find reflections of their own journeys within her words.
+                Drawing from her own experiences, Danielle crafts narratives
+                that are both deeply personal and universally resonant, inviting
+                readers to find reflections of their own journeys within her
+                words.
               </p>
               <p className="text-lg md:text-xl leading-relaxed">
-                When not writing, Danielle enjoys connecting with readers who have experienced similar family struggles.{" "}
-                <span className="text-gold">Life in Instalments</span> is her debut memoir.
+                When not writing, Danielle enjoys connecting with readers who
+                have experienced similar family struggles.{" "}
+                <span className="text-gold">Life in Instalments</span> is her
+                debut memoir.
               </p>
               <div className="social-links flex gap-4 pt-4">
-                <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
+                {/* <Link
+                  href="https://instagram.com"
+                  target="_blank"
+                  aria-label="Instagram"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -629,8 +649,12 @@ export default function Home() {
                   >
                     <Instagram className="h-5 w-5" />
                   </Button>
-                </Link>
-                <Link href="https://youtube.com" target="_blank" aria-label="YouTube">
+                </Link> */}
+                <Link
+                  href="https://youtube.com/@accidentalauthor?si=JCkHhugSHi_QPmmm"
+                  target="_blank"
+                  aria-label="YouTube"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -639,7 +663,11 @@ export default function Home() {
                     <Youtube className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
+                <Link
+                  href="https://www.facebook.com/profile.php?id=61574600643131"
+                  target="_blank"
+                  aria-label="Facebook"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -653,7 +681,7 @@ export default function Home() {
             <div className="author-image order-1 md:order-2 flex justify-center">
               <div className="relative w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-gold transform transition-transform hover:scale-105">
                 <Image
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000"
+                  src="/Author.jpg"
                   alt="Danielle Sartorelli"
                   fill
                   className="object-cover"
@@ -765,7 +793,11 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" ref={contactRef} className="py-24 bg-black relative">
+      <section
+        id="contact"
+        ref={contactRef}
+        className="py-24 bg-black relative"
+      >
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-5 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 z-10 relative">
           <h2 className="contact-title text-3xl md:text-5xl font-serif mb-12 text-center">
@@ -775,8 +807,9 @@ export default function Home() {
           <div className="max-w-2xl mx-auto">
             <div className="contact-form space-y-6">
               <p className="text-gray-300 mb-6 text-center">
-                Have questions about the book, interested in booking Danielle for an event, or just want to share your
-                thoughts? Fill out the form and we'll get back to you soon.
+                Have questions about the book, interested in booking Danielle
+                for an event, or just want to share your thoughts? Fill out the
+                form and we'll get back to you soon.
               </p>
               <form className="space-y-4" onSubmit={handleContactSubmit}>
                 <div className="grid grid-cols-2 gap-4">
@@ -809,12 +842,18 @@ export default function Home() {
                     value={contactFormData.email}
                     onChange={handleContactInputChange}
                     className={`bg-gray-900 border-gray-700 focus:border-gold rounded-none ${
-                      emailValid === false ? "border-red-500" : emailValid === true ? "border-green-500" : ""
+                      emailValid === false
+                        ? "border-red-500"
+                        : emailValid === true
+                        ? "border-green-500"
+                        : ""
                     }`}
                     required
                   />
                   {emailValid === false && (
-                    <p className="text-red-500 text-xs mt-1">Please enter a valid email address</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      Please enter a valid email address
+                    </p>
                   )}
                 </div>
                 <div>
@@ -831,10 +870,12 @@ export default function Home() {
                   type="submit"
                   className="bg-gold hover:bg-gold/80 text-black rounded-none w-full transform hover:scale-105 transition-transform"
                   disabled={isSubmitting || formSubmitted}
+                  onClick={handleContactSubmit}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                      Sending...
                     </>
                   ) : formSubmitted ? (
                     "Message Sent!"
@@ -862,14 +903,15 @@ export default function Home() {
                 href="#hero"
                 className="text-gold font-serif text-2xl"
                 onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection("hero")
+                  e.preventDefault();
+                  scrollToSection("hero");
                 }}
               >
                 Life in Instalments
               </Link>
               <p className="text-gray-400 mt-2">
-                © {new Date().getFullYear()} Danielle Sartorelli. All rights reserved.
+                © {new Date().getFullYear()} Danielle Sartorelli. All rights
+                reserved.
               </p>
             </div>
             <div className="flex gap-8">
@@ -878,6 +920,7 @@ export default function Home() {
                 { id: "author", label: "Author" },
                 { id: "purchase", label: "Purchase" },
                 { id: "reviews", label: "Reviews" },
+                { id: "events", label: "Events" },
                 { id: "blog", label: "Blog" },
                 { id: "contact", label: "Contact" },
               ].map((item) => (
@@ -886,8 +929,8 @@ export default function Home() {
                   href={`#${item.id}`}
                   className="text-gray-300 hover:text-gold transition-colors"
                   onClick={(e) => {
-                    e.preventDefault()
-                    scrollToSection(item.id)
+                    e.preventDefault();
+                    scrollToSection(item.id);
                   }}
                 >
                   {item.label}
@@ -896,16 +939,24 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-end gap-4 mt-6 md:mt-0">
               <div className="flex gap-4">
-                <Link href="https://instagram.com" target="_blank" aria-label="Instagram">
+                <Link
+                  href="accidentalauthor86@gmail.com"
+                  target="_blank"
+                  aria-label="Instagram"
+                >
                   <Button
                     variant="outline"
                     size="icon"
                     className="rounded-full border-gray-700 text-gray-300 hover:border-gold hover:text-gold transform hover:scale-110 transition-transform"
                   >
-                    <Instagram className="h-5 w-5" />
+                    <Mail className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://youtube.com" target="_blank" aria-label="YouTube">
+                <Link
+                  href=" https://youtube.com/@accidentalauthor?si=JCkHhugSHi_QPmmm"
+                  target="_blank"
+                  aria-label="YouTube"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -914,7 +965,12 @@ export default function Home() {
                     <Youtube className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://facebook.com" target="_blank" aria-label="Facebook">
+                <Link
+                  href="https://www.facebook.com/profile.php?id=61574600643131
+"
+                  target="_blank"
+                  aria-label="Facebook"
+                >
                   <Button
                     variant="outline"
                     size="icon"
@@ -928,19 +984,20 @@ export default function Home() {
                 <p className="text-xs text-gray-500">
                   Website by{" "}
                   <Link
-                    href="https://yourdevsite.com"
+                    href="https://brianmunene.vercel.app"
                     target="_blank"
                     className="text-gold/70 hover:text-gold transition-colors hover:underline"
                   >
-                    Your Developer Name
+                    Kim
                   </Link>
                 </p>
+       
               </div>
             </div>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
