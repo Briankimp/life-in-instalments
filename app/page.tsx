@@ -531,7 +531,7 @@ export default function Home() {
             <p className="hero-subtitle text-xl md:text-2xl italic text-gray-300">a true story</p>
             <FloatingElement>
               <p className="hero-quote text-xl md:text-2xl font-light leading-relaxed">
-                "We all have chapters that are difficult to face, the question is whether we let them define our story."
+                "Sometimes the threads that bind us, are the same ones that can also strangle us".
               </p>
             </FloatingElement>
             <div className="pt-4">
