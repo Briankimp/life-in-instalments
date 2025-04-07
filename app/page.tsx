@@ -134,14 +134,14 @@ export default function Home() {
     return re.test(String(email).toLowerCase())
   }
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    if (value === "") {
-      setEmailValid(null)
-      return
-    }
-    setEmailValid(validateEmail(value))
-  }
+  // const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { value } = e.target
+  //   if (value === "") {
+  //     setEmailValid(null)
+  //     return
+  //   }
+  //   setEmailValid(validateEmail(value))
+  // }
 
   const handleContactInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -522,7 +522,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('/images/texture.png')] opacity-10 z-0 parallax-bg"></div>
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-8 md:gap-16 z-10">
           <div className="md:w-1/2 flex justify-center">
-            <BookCover imageUrl="/bookcover" />
+            <BookCover imageUrl="/bookcover.jpg" />
           </div>
           <div className="md:w-1/2 space-y-6 text-center md:text-left">
             <h1 className="hero-title text-4xl md:text-6xl font-serif font-bold">
