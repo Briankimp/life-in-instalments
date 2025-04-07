@@ -60,21 +60,18 @@ const STATIC_DATA = {
       id: "1",
       name: "Amazon",
       description: "Available in hardcover, paperback, and Kindle editions",
-      imageUrl: "/bookcover",
       link: "#",
     },
     {
       id: "2",
       name: "Barnes & Noble",
       description: "Available in hardcover, paperback, and Nook editions",
-      imageUrl: "/bookcover",
       link: "#",
     },
     {
       id: "3",
       name: "Indie Bookstores",
       description: "Support your local bookstore and get a signed copy",
-      imageUrl: "/bookcover",
       link: "#",
     },
   ],
@@ -163,46 +160,47 @@ export default function Home() {
   }
 
   const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
+    e.preventDefault();
+    setIsSubmitting(true);
+  
     try {
-      const response = await fetch("/api/send-email", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: `${contactFormData.firstName} ${contactFormData.lastName}`,
+          firstName: contactFormData.firstName,
+          lastName: contactFormData.lastName,
           email: contactFormData.email,
-          message: contactFormData.message,
-          type: "contact",
+          message: contactFormData.message
         }),
-      })
-
+      });
+  
       if (response.ok) {
-        setFormSubmitted(true)
+        setFormSubmitted(true);
         setContactFormData({
           firstName: "",
           lastName: "",
           email: "",
           message: "",
-        })
+        });
       } else {
-        console.error("Failed to send email")
+        throw new Error('Failed to send message');
       }
     } catch (error) {
-      console.error("Error sending email:", error)
+      console.error("Error sending email:", error);
+      alert('Failed to send message. Please try again later.');
     } finally {
-      setIsSubmitting(false)
-
+      setIsSubmitting(false);
+  
       // Reset form after 3 seconds
       setTimeout(() => {
-        setFormSubmitted(false)
-        setEmailValid(null)
-      }, 3000)
+        setFormSubmitted(false);
+        setEmailValid(null);
+      }, 3000);
     }
-  }
+  };
 
   // Smooth scroll function
   const scrollToSection = (id: string) => {
@@ -708,7 +706,7 @@ export default function Home() {
                   className="purchase-card bg-gray-900 p-8 rounded-md flex flex-col items-center text-center hover:bg-gray-800 transition-colors group"
                 >
                   <Image
-                    src={link.imageUrl || "/placeholder.svg"}
+                    src={"/bookcover.jpg"}
                     alt={link.name}
                     width={80}
                     height={80}
