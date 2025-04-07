@@ -63,7 +63,7 @@ export default function BookCover({ imageUrl }: BookCoverProps) {
         />
       </div>
 
-      {/* Page flip effect */}
+      {/* Page flip effect
       <div
         ref={pageRef}
         className="absolute top-0 right-0 w-[50%] h-full bg-white/10 backdrop-blur-sm rounded-r-md"
@@ -73,7 +73,7 @@ export default function BookCover({ imageUrl }: BookCoverProps) {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/5"></div>
-      </div>
+      </div> */}
 
       {/* Gold glow effect on hover */}
       {isHovered && <div className="absolute -inset-2 bg-gold/20 rounded-lg blur-md z-[-1] animate-pulse"></div>}
